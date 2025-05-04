@@ -1,0 +1,13 @@
+# System Files
+.DS_Store
+Thumbs.db
+
+# IDE/Editor folders
+.vscode/
+.idea/
+
+# Backup folders
+backup/
+
+# Node modules if any
+node_modules/
