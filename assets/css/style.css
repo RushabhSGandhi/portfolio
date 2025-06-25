@@ -573,47 +573,16 @@ header .navbar ul li a:hover {
 /* social icons end */
 
 /* hero media queries starts*/
-/* ↓ replace your entire @media (max-width: 450px) block with this: */
 @media (max-width: 450px) {
-  /* make the hero stack vertically */
-  .home {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 6rem; /* account for your fixed header */
-    gap: 1.5rem;
-  }
-
-  /* let the button sit in the flow, not absolute */
   .home .btn {
-    position: static !important;
-    margin: 2rem 0;
+    margin: 4rem 0;
   }
-
-  /* socials just underneath the button */
   .socials {
-    margin-top: 0;
-  }
-
-  /* photo below everything, smaller, with positive spacing */
-  .home .image {
-    order: 2;
-    width: 60%;      /* scale as you like */
-    max-width: 250px;
-    margin: 0 auto 2rem;
+    margin-top: 12rem;
   }
   .home .image img {
-    margin: 0;       /* remove that -12rem */
-    width: 100%;
+    margin-top: -12rem;
   }
-
-  /* content (heading + typing text) first */
-  .home .content {
-    order: 1;
-    text-align: center;
-  }
-
-  /* tweak text sizing if you need */
   .home .content p {
     font-size: 2.2rem;
   }
@@ -621,7 +590,6 @@ header .navbar ul li a:hover {
     font-size: 2.2rem;
   }
 }
-
 /* hero media queries ends*/
 /* hero section end */
 
@@ -1540,49 +1508,12 @@ form .button-area {
   top: calc(100% - 12rem);
 }
 /* scroll top ends */
-@media (max-width: 768px) {
-  /* 1) Wrap heading, button, icons in one centered column */
-  .home .content {
-    max-width: 360px;          /* constrain width so both btn & icons share the same center */
-    margin: calc(6.5rem + 2rem) auto 2rem; /* push below fixed header */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 1.5rem;
-  }
 
-  /* 2) Kill any absolute positioning on your “About Me” link */
-  .home .btn {
-    position: static !important;
-    margin: 0;                 /* reset any stray margins */
-    display: inline-flex;      /* let it size to its content */
-    justify-content: center;
-    align-items: center;
-  }
-
-  /* 3) Center and equalize your social-icon row */
-  .socials {
-    margin: 0;
-    width: 100%;
-  }
-  .social-icons {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;                 /* space between each circle */
-    padding: 0;
-    margin: 0;
-  }
-  .social-icons li {
-    list-style: none;
-  }
-  .social-icons a {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 44px;               /* same width/height as your original circles */
-    height: 44px;
-    padding: 0;
+/* make the hero image smaller on mobile/tablet */
+@media screen and (max-width: 768px) {
+  .home .image img {
+    width: 50% !important;      /* shrink to half of its container */
+    max-width: 200px !important; /* don’t let it get bigger than 200px */
+    margin: 0 auto !important;   /* center under the text */
   }
 }
-
