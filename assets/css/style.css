@@ -1540,41 +1540,49 @@ form .button-area {
   top: calc(100% - 12rem);
 }
 /* scroll top ends */
-/* at the very bottom of your CSS */
 @media (max-width: 768px) {
-  /* stack and center everything in your hero */
+  /* 1) Wrap heading, button, icons in one centered column */
   .home .content {
+    max-width: 360px;          /* constrain width so both btn & icons share the same center */
+    margin: calc(6.5rem + 2rem) auto 2rem; /* push below fixed header */
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    gap: 1rem;
+    gap: 1.5rem;
   }
 
-  /* let the About-Me button live in the flow */
+  /* 2) Kill any absolute positioning on your “About Me” link */
   .home .btn {
     position: static !important;
-    margin: 0;
+    margin: 0;                 /* reset any stray margins */
+    display: inline-flex;      /* let it size to its content */
+    justify-content: center;
+    align-items: center;
   }
 
-  /* center your social-icons row */
+  /* 3) Center and equalize your social-icon row */
   .socials {
     margin: 0;
+    width: 100%;
   }
   .social-icons {
     display: flex;
     justify-content: center;
-    align-items: center;
-    gap: 1.2rem;
+    gap: 1rem;                 /* space between each circle */
     padding: 0;
+    margin: 0;
   }
   .social-icons li {
-    margin: 0;
+    list-style: none;
   }
   .social-icons a {
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 44px;               /* same width/height as your original circles */
+    height: 44px;
+    padding: 0;
   }
 }
 
