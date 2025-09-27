@@ -23,6 +23,11 @@
     <link id='favicon' rel="shortcut icon" href="./assets/images/favicon.svg" type="image/svg+xml">
     <title>Portfolio | Rushabh Gandhi</title>
     <!-- Calendly link widget begin --> <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet"> <script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script> <a href="" onclick="Calendly.initPopupWidget({url: 'https://calendly.com/rushabh-rushabh/30min?hide_event_type_details=1&hide_gdpr_banner=1'});return false;">Schedule</a> <!-- Calendly link widget end -->
+    <!-- Calendly widget start -->
+<link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
+<script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
+<!-- Calendly widget end -->
+
 </head>
 <body oncontextmenu="return false">
 
@@ -57,9 +62,13 @@
     <div class="content">
     <h2>Hi There,<br/> I'm Rushabh <span>Gandhi</span></h2>
     <p>i am into <span class="typing-text"></span></p>
-    <a href="#about" class="btn"><span>About Me</span>
-      <i class="fas fa-arrow-circle-down"></i>
-    </a>
+    <a href="#"
+   class="btn"
+   aria-label="Schedule a call"
+   onclick="Calendly.initPopupWidget({ url: 'https://calendly.com/rushabh-rushabh/30min?hide_event_type_details=1&hide_gdpr_banner=1' }); return false;">
+  <span>Schedule a Call</span>
+  <i class="fas fa-calendar-alt"></i>
+</a>
     <div class="socials">
         <ul class="social-icons">
           <li><a class="email" aria-label="Email" href="mailto:rushabh@rushabh.tech"><i class="fas fa-envelope"></i></a></li>
