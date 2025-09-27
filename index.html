@@ -20,33 +20,11 @@
   <!-- Site CSS -->
   <link rel="stylesheet" href="./assets/css/style.css">
 
-  <!-- Optional: minor tweak to make the new button match the badge -->
-  <style>
-    .btn-calendly {
-      background: #ff0000;
-      color: #ffffff;
-      border: none;
-      border-radius: 8px;
-      padding: 10px 20px;
-      font-weight: 600;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      text-decoration: none;
-    }
-    .btn-calendly:hover { filter: brightness(0.95); }
-  </style>
-
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
   <!-- Favicon -->
   <link id="favicon" rel="shortcut icon" href="./assets/images/favicon.svg" type="image/svg+xml">
-
-  <!-- Calendly badge widget (one copy only) -->
-  <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
-  <script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
 </head>
 <body oncontextmenu="return false">
 
@@ -62,6 +40,7 @@
         <li><a href="#education">Education</a></li>
         <li><a href="#experience">Experience</a></li>
         <li><a href="#work">Projects</a></li>
+        <li><a href="#schedule">Schedule</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
     </nav>
@@ -76,14 +55,10 @@
       <h2>Hi There,<br/> I'm Rushabh <span>Gandhi</span></h2>
       <p>i am into <span class="typing-text"></span></p>
 
-      <!-- NEW: Text-only Calendly button (replaces the old anchor) -->
-      <button
-        type="button"
-        class="btn btn-calendly"
-        aria-label="Schedule a meeting"
-        onclick="Calendly.initPopupWidget({ url: 'https://calendly.com/rushabh-rushabh/30min?hide_event_type_details=1&hide_gdpr_banner=1' }); return false;">
+      <!-- Button now scrolls to the inline Calendly section (no icon) -->
+      <a href="#schedule" class="btn" aria-label="Schedule a meeting">
         <span>Schedule a Meeting</span>
-      </button>
+      </a>
 
       <div class="socials">
         <ul class="social-icons">
@@ -270,6 +245,20 @@
   </section>
   <!-- work project section ends -->
 
+  <!-- SCHEDULE section (Calendly inline widget) -->
+  <section class="schedule" id="schedule">
+    <h2 class="heading"><i class="fas fa-calendar"></i> Schedule a <span>Meeting</span></h2>
+
+    <!-- Calendly inline widget begin -->
+    <div class="calendly-inline-widget"
+         data-url="https://calendly.com/rushabh-rushabh/30min?hide_event_type_details=1&hide_gdpr_banner=1"
+         style="min-width:320px;height:700px;"></div>
+    <script type="text/javascript"
+            src="https://assets.calendly.com/assets/external/widget.js"
+            async></script>
+    <!-- Calendly inline widget end -->
+  </section>
+
   <!-- contact section starts -->
   <section class="contact" id="contact">
     <h2 class="heading"><i class="fas fa-headset"></i> Get in <span>Touch</span></h2>
@@ -370,59 +359,25 @@
   <!-- Site JS -->
   <script src="./assets/js/script.js"></script>
 
-  <!-- Calendly badge init + auto-open for /schedule and ?schedule=true -->
+  <!-- Smooth auto-scroll to /schedule or ?schedule=true -->
   <script>
     (function () {
-      const CAL_URL = "https://calendly.com/rushabh-rushabh/30min?hide_event_type_details=1&hide_gdpr_banner=1&primary_color=ff5000";
-
-      function initBadge() {
-        if (window.Calendly && typeof Calendly.initBadgeWidget === "function") {
-          Calendly.initBadgeWidget({
-            url: CAL_URL,
-            text: "Schedule a Meeting",
-            color: "#ff0000",     // badge background
-            textColor: "#ffffff", // badge text
-            branding: true        // "powered by Calendly"
-            // alignment: "left"  // uncomment to move to bottom-left
-          });
-        }
-      }
-
-      function shouldAutoOpen() {
+      function shouldScrollToSchedule() {
         const u = new URL(window.location.href);
         return window.location.pathname === "/schedule" || u.searchParams.get("schedule") === "true";
       }
-
-      function openPopup() {
-        try { Calendly.initPopupWidget({ url: CAL_URL }); } catch (_) {}
-      }
-
-      function start() {
-        // initialize badge
-        initBadge();
-
-        // if user hit /schedule (or ?schedule=true), open popup once Calendly is ready
-        if (shouldAutoOpen()) {
-          const startTime = Date.now();
-          const t = setInterval(() => {
-            if (window.Calendly && typeof Calendly.initPopupWidget === "function") {
-              clearInterval(t);
-              openPopup();
-            } else if (Date.now() - startTime > 8000) {
-              clearInterval(t);
-            }
-          }, 50);
+      document.addEventListener("DOMContentLoaded", function () {
+        if (shouldScrollToSchedule()) {
+          const el = document.getElementById("schedule");
+          if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
         }
-      }
-
-      // wait until page load for best reliability with async script
-      window.addEventListener("load", start);
+      });
     })();
   </script>
 
   <noscript>
     <p>
-      JavaScript is required for scheduling. You can still book here:
+      JavaScript is required to load the scheduler. You can also book here:
       <a href="https://calendly.com/rushabh-rushabh/30min?hide_event_type_details=1&hide_gdpr_banner=1" target="_blank" rel="noopener">
         Calendly – 30 min
       </a>
