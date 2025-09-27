@@ -20,6 +20,24 @@
   <!-- Site CSS -->
   <link rel="stylesheet" href="./assets/css/style.css">
 
+  <!-- Optional: minor tweak to make the new button match the badge -->
+  <style>
+    .btn-calendly {
+      background: #ff0000;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+    }
+    .btn-calendly:hover { filter: brightness(0.95); }
+  </style>
+
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
@@ -58,13 +76,14 @@
       <h2>Hi There,<br/> I'm Rushabh <span>Gandhi</span></h2>
       <p>i am into <span class="typing-text"></span></p>
 
-      <!-- Text-only schedule button -->
-      <a href="#"
-         class="btn"
-         aria-label="Schedule a call"
-         onclick="Calendly.initPopupWidget({ url: 'https://calendly.com/rushabh-rushabh/30min?hide_event_type_details=1&hide_gdpr_banner=1' }); return false;">
-        <span>Schedule a Call</span>
-      </a>
+      <!-- NEW: Text-only Calendly button (replaces the old anchor) -->
+      <button
+        type="button"
+        class="btn btn-calendly"
+        aria-label="Schedule a meeting"
+        onclick="Calendly.initPopupWidget({ url: 'https://calendly.com/rushabh-rushabh/30min?hide_event_type_details=1&hide_gdpr_banner=1' }); return false;">
+        <span>Schedule a Meeting</span>
+      </button>
 
       <div class="socials">
         <ul class="social-icons">
