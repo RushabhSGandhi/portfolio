@@ -455,6 +455,16 @@
 <!-- ==== ALL MAJOR JAVASCRIPT CDNS ENDS ==== -->
 
 <script src="./assets/js/script.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Check if the URL ends with /schedule
+    if (window.location.pathname === "/schedule") {
+      Calendly.initPopupWidget({
+        url: "https://calendly.com/rushabh-rushabh/30min?hide_event_type_details=1&hide_gdpr_banner=1"
+      });
+    }
+  });
+</script>
 
 </body>
 </html>
