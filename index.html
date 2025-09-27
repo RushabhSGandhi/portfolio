@@ -7,241 +7,183 @@
     <meta name="keywords" content="rushabh gandhi, portfolio, rushabh, full stack dev, personal portfolio, portfolio design, portfolio website, personal portfolio" />
     <meta name="description" content="Welcome to Rushabh's Portfolio. Full-Stack Web Developer and Software Developer" />
     <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-WC3YF0N5C9"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-WC3YF0N5C9');
-</script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WC3YF0N5C9"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-WC3YF0N5C9');
+    </script>
     <!-- Custom CSS -->
     <link rel="stylesheet" href="./assets/css/style.css">
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-..."
+      crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Favicon -->
     <link id='favicon' rel="shortcut icon" href="./assets/images/favicon.svg" type="image/svg+xml">
     <title>Portfolio | Rushabh Gandhi</title>
+    <style>
+      /* Optional: smooth scroll + small Calendly responsiveness helpers */
+      html { scroll-behavior: smooth; }
+      .schedule { padding: 4rem 9%; background: #0b0f17; color: #fff; }
+      .schedule .heading { text-align:center; margin-bottom:2rem; }
+      .schedule .cal-wrap { display:flex; justify-content:center; }
+      /* Let Calendly grow taller on small screens */
+      @media (max-width: 480px){
+        .schedule .calendly-inline-widget { height: 900px !important; }
+      }
+    </style>
 </head>
 <body oncontextmenu="return false">
 
-<!-- pre loader -->
-<!-- <div class="loader-container">
-  <img draggable="false" src="./assets/images/preloader.gif" alt="">
-</div> -->
-
 <!-- navbar starts -->
 <header>
-        <a href="/" class="logo"><i class="fab fa-react"></i> Rushabh</a>
+  <a href="/" class="logo"><i class="fab fa-react"></i> Rushabh</a>
 
-        <div id="menu" class="fas fa-bars"></div>
-        <nav class="navbar">
-            <ul>
-            <li><a class="active" href="#home">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#education">Education</a></li>
-            <li><a href="#experience">Experience</a></li>
-            <li><a href="#work">Projects</a></li>
-            <li><a href="#contact">Contact</a></li>
-            </ul>
-        </nav>
+  <div id="menu" class="fas fa-bars"></div>
+  <nav class="navbar">
+      <ul>
+        <li><a class="active" href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#education">Education</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#work">Projects</a></li>
+        <!-- NEW: schedule link -->
+        <li><a href="#schedule">Schedule</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+  </nav>
 </header>
 <!-- navbar ends -->
 
-
 <!-- hero section starts -->
 <section class="home" id="home">
-    <div id="particles-js"></div>
+  <div id="particles-js"></div>
 
-    <div class="content">
+  <div class="content">
     <h2>Hi There,<br/> I'm Rushabh <span>Gandhi</span></h2>
     <p>i am into <span class="typing-text"></span></p>
     <a href="#about" class="btn"><span>About Me</span>
       <i class="fas fa-arrow-circle-down"></i>
     </a>
     <div class="socials">
-        <ul class="social-icons">
-          <li><a class="email" aria-label="Email" href="mailto:rushabh@rushabh.tech"><i class="fas fa-envelope"></i></a></li>
-          <li><a class="linkedin" aria-label="LinkedIn" href="https://www.linkedin.com/in/rushabhgandhi9" target="_blank"><i class="fab fa-linkedin"></i></a></li> 
-          <li><a class="twitter" aria-label="Twitter" href="https://x.com/Rushabh999999" target="_blank"><i class="fab fa-twitter"></i></a></li>
-          <li><a class="instagram" aria-label="Instagram" href="https://www.instagram.com/rushabhgandhii/" target="_blank"><i class="fab fa-instagram"></i></a></li>
-          
-        </ul>
-      </div>
+      <ul class="social-icons">
+        <li><a class="email" aria-label="Email" href="mailto:rushabh@rushabh.tech"><i class="fas fa-envelope"></i></a></li>
+        <li><a class="linkedin" aria-label="LinkedIn" href="https://www.linkedin.com/in/rushabhgandhi9" target="_blank"><i class="fab fa-linkedin"></i></a></li> 
+        <li><a class="twitter" aria-label="Twitter" href="https://x.com/Rushabh999999" target="_blank"><i class="fab fa-twitter"></i></a></li>
+        <li><a class="instagram" aria-label="Instagram" href="https://www.instagram.com/rushabhgandhii/" target="_blank"><i class="fab fa-instagram"></i></a></li>
+      </ul>
     </div>
-<div class="image">
+  </div>
+  <div class="image">
     <img draggable="false" class="tilt" src="./assets/images/Rushabh_Photograph.jpg" alt="">
-</div>
+  </div>
 </section>
 <!-- hero section ends -->
 
-
 <!-- about section starts -->
 <section class="about" id="about">
-    <h2 class="heading"><i class="fas fa-user-alt"></i> About <span>Me</span></h2>
-    
-    <div class="row">
-
+  <h2 class="heading"><i class="fas fa-user-alt"></i> About <span>Me</span></h2>
+  <div class="row">
     <div class="image">
-        <img draggable="false" class="tilt" src="./assets/images/profile2.jpg" alt="">
+      <img draggable="false" class="tilt" src="./assets/images/profile2.jpg" alt="">
     </div>
     <div class="content">
-        <h1>I'm Rushabh</h1>
-        <span class="tag">Problem Solver</span>
-        
-        <p>I hold a Master's degree in Computer Science from Illinois Institute of Technology with a strong passion for Software Development.
-          I have comprehensive experience with modern technologies including React, Python, and Java.
-          My expertise spans systems engineering, web development, database management, and cloud technologies.
-          With a solid foundation in data structures and algorithms, I build efficient and user-friendly solutions.
-          I am currently advancing my skills in AI integration and enterprise-scale applications.</p>
-      
+      <h1>I'm Rushabh</h1>
+      <span class="tag">Problem Solver</span>
+      <p>I hold a Master's degree in Computer Science from Illinois Institute of Technology with a strong passion for Software Development.
+        I have comprehensive experience with modern technologies including React, Python, and Java.
+        My expertise spans systems engineering, web development, database management, and cloud technologies.
+        With a solid foundation in data structures and algorithms, I build efficient and user-friendly solutions.
+        I am currently advancing my skills in AI integration and enterprise-scale applications.</p>
     </div>
-    <div class="share">
-
-
-
-
-
-
-    </div>
-
-
-    
-
-    </div>
+    <div class="share"></div>
+  </div>
 </section>
 <!-- about section ends -->
+
 <!-- education section starts -->
 <section class="education" id="education">
-
   <h1 class="heading"><i class="fas fa-graduation-cap"></i> My <span>Education</span></h1>
+  <p class="qoute">Education is not the learning of facts, but the training of the mind to think.</p>
 
-    <p class="qoute">Education is not the learning of facts, but the training of the mind to think.</p>
-
-    <div class="box-container">
-
+  <div class="box-container">
     <div class="box">
-        <div class="image">
+      <div class="image">
         <img draggable="false" src="./assets/images/educat/college.jpg" alt="">
-        </div>
-        <div class="content">
+      </div>
+      <div class="content">
         <h3>Master of Science in Computer Science</h3>
         <p>Illinois Institute of Technology | Chicago, IL</p>
         <h4>Aug 2023 - May 2025 | GPA: 3.6</h4>
-        </div>
+      </div>
     </div>
 
     <div class="box">
       <div class="image">
-      <img draggable="false" src="./assets/images/educat/school.jpg" alt="">
+        <img draggable="false" src="./assets/images/educat/school.jpg" alt="">
       </div>
       <div class="content">
-      <h3>Bachelor of Technology in Computer Science</h3>
-      <p>Walchand Institute of Technology</p>
-      <h4>Aug 2018 - Jun 2022 | GPA: 3.7</h4>
+        <h3>Bachelor of Technology in Computer Science</h3>
+        <p>Walchand Institute of Technology</p>
+        <h4>Aug 2018 - Jun 2022 | GPA: 3.7</h4>
       </div>
     </div>
-    
-    
-
-</div>
+  </div>
 </section>
 <!-- education section ends -->
 
 <!-- experience section starts -->
 <section class="experience" id="experience">
-
   <h2 class="heading"><i class="fas fa-briefcase"></i> Experience </h2>
-
   <div class="timeline">
-
-    
-
     <div class="container left">
       <div class="content">
-        <div class="tag">
-          <h2>Teaching Assistant - Operating Systems</h2>
-        </div>
-        <div class="desc">
-            <h3>Illinois Institute of Technology</h3>
-            <p>Aug 2024 - May 2025</p>
-        </div>
+        <div class="tag"><h2>Teaching Assistant - Operating Systems</h2></div>
+        <div class="desc"><h3>Illinois Institute of Technology</h3><p>Aug 2024 - May 2025</p></div>
       </div>
     </div>
 
     <div class="container right">
       <div class="content">
-        <div class="tag">
-          <h2>Student Success Coach - Chicago Difference</h2>
-        </div>
-        <div class="desc">
-            <h3>Illinois Institute of Technology</h3>
-            <p>Aug 2024 - May 2025</p>
-        </div>
-      </div>
-    </div>
-    <div class="container left">
-      <div class="content">
-        <div class="tag">
-          <h2>AI Engineering Intern</h2>
-        </div>
-        <div class="desc">
-            <h3>Reality AI</h3>
-            <p>Jun 2024 - Aug 2024</p>
-        </div>
-      </div>
-    </div>
-    <div class="container right">
-      <div class="content">
-        <div class="tag">
-          <h2>Software Project Management Intern</h2>
-        </div>
-        <div class="desc">
-            <h3>Excelerate</h3>
-            <p>Jun 2023 - Aug 2023</p>
-        </div>
+        <div class="tag"><h2>Student Success Coach - Chicago Difference</h2></div>
+        <div class="desc"><h3>Illinois Institute of Technology</h3><p>Aug 2024 - May 2025</p></div>
       </div>
     </div>
 
-    
+    <div class="container left">
+      <div class="content">
+        <div class="tag"><h2>AI Engineering Intern</h2></div>
+        <div class="desc"><h3>Reality AI</h3><p>Jun 2024 - Aug 2024</p></div>
+      </div>
+    </div>
+
+    <div class="container right">
+      <div class="content">
+        <div class="tag"><h2>Software Project Management Intern</h2></div>
+        <div class="desc"><h3>Excelerate</h3><p>Jun 2023 - Aug 2023</p></div>
+      </div>
+    </div>
 
     <div class="container left">
       <div class="content">
-        <div class="tag">
-          <h2>Systems Engineer</h2>
-        </div>
-        <div class="desc">
-            <h3>Infosys</h3>
-            <p>Aug 2022 - Apr 2023</p>
-        </div>
+        <div class="tag"><h2>Systems Engineer</h2></div>
+        <div class="desc"><h3>Infosys</h3><p>Aug 2022 - Apr 2023</p></div>
       </div>
     </div>
-    
+
     <div class="container right">
       <div class="content">
-        <div class="tag">
-          <h2>Software Engineer</h2>
-        </div>
-        <div class="desc">
-            <h3>Result Series</h3>
-            <p>Jun 2021 - Jul 2022</p>
-        </div>
+        <div class="tag"><h2>Software Engineer</h2></div>
+        <div class="desc"><h3>Result Series</h3><p>Jun 2021 - Jul 2022</p></div>
       </div>
     </div>
   </div>
-
 </section>
 <!-- experience section ends -->
 
-
-
-
-
-
-
 <!-- work project section starts -->
 <section class="work" id="work">
-
   <h2 class="heading"><i class="fas fa-laptop-code"></i> Featured <span>Projects</span></h2>
 
   <div class="project-container">
@@ -250,12 +192,8 @@
         <h3 class="project-title">Grade Book</h3>
         <p class="project-description">Full-featured grade calculator and Grade Tracker with real-time weighted average computation, customizable grading scales, and secure template sharing functionality.</p>
         <div class="tech-stack">
-          <span class="tech">React</span>
-          <span class="tech">TypeScript</span>
-          <span class="tech">Next.js</span>
-          <span class="tech">Tailwind CSS</span>
-          <span class="tech">OpenAI LLMs</span>
-          <span class="tech">Firebase</span>
+          <span class="tech">React</span><span class="tech">TypeScript</span><span class="tech">Next.js</span>
+          <span class="tech">Tailwind CSS</span><span class="tech">OpenAI LLMs</span><span class="tech">Firebase</span>
         </div>
         <div class="project-url">
           <a href="http://www.graderbook.com" target="_blank">www.graderbook.com</a>
@@ -266,71 +204,64 @@
         <img draggable="false" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original-wordmark.svg" alt="Grade Book" />
       </div>
     </div>
+
     <div class="project-card">
       <div class="project-content">
         <h3 class="project-title">AI-Powered Health & Fitness Platform</h3>
         <p class="project-description">AI-driven personalized wellness system that creates custom fitness and nutrition plans using large language models with retrieval augmented generation.</p>
         <div class="tech-stack">
-          <span class="tech">Python</span>
-          <span class="tech">FastAPI</span>
-          <span class="tech">LangChain</span>
-          <span class="tech">OpenAI</span>
-          <span class="tech">Vector DB</span>
+          <span class="tech">Python</span><span class="tech">FastAPI</span><span class="tech">LangChain</span>
+          <span class="tech">OpenAI</span><span class="tech">Vector DB</span>
         </div>
-        
       </div>
       <div class="project-image">
         <img draggable="false" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original-wordmark.svg" alt="AI Health Platform" />
       </div>
     </div>
-    
-    
-    
+
     <div class="project-card">
       <div class="project-content">
         <h3 class="project-title">Helping Hands</h3>
         <p class="project-description">Social service platform that bridges the gap between those in need and support providers, featuring secure messaging, resource directory, and event coordination.</p>
         <div class="tech-stack">
-          <span class="tech">JavaScript</span>
-          <span class="tech">HTML/CSS</span>
-          <span class="tech">Node.js</span>
-          <span class="tech">MongoDB</span>
+          <span class="tech">JavaScript</span><span class="tech">HTML/CSS</span><span class="tech">Node.js</span><span class="tech">MongoDB</span>
         </div>
-        
       </div>
       <div class="project-image">
         <img draggable="false" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="Helping Hands" />
       </div>
     </div>
-    
+
     <div class="project-card">
       <div class="project-content">
         <h3 class="project-title">Bank Management System</h3>
         <p class="project-description">Comprehensive banking platform with account management, secure transactions, statement generation, and admin dashboard with analytics for transaction monitoring.</p>
         <div class="tech-stack">
-          <span class="tech">Python</span>
-          <span class="tech">FastAPI</span>
-          <span class="tech">PostgreSQL</span>
-          <span class="tech">AWS S3</span>
+          <span class="tech">Python</span><span class="tech">FastAPI</span><span class="tech">PostgreSQL</span><span class="tech">AWS S3</span>
         </div>
-        
       </div>
       <div class="project-image">
         <img draggable="false" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original-wordmark.svg" alt="Bank Management System" />
       </div>
     </div>
-
-</div>
-
-
-
+  </div>
 </section>
 <!-- work project section ends -->
 
+<!-- NEW: schedule section with Calendly -->
+<section class="schedule" id="schedule" aria-label="Schedule a meeting">
+  <h2 class="heading"><i class="far fa-calendar-check"></i> Schedule a <span>Call</span></h2>
+  <div class="cal-wrap">
+    <!-- Calendly inline widget begin -->
+    <div class="calendly-inline-widget"
+         data-url="https://calendly.com/rushabh-rushabh/30min"
+         style="min-width:320px;height:700px;"></div>
+    <!-- Calendly inline widget end -->
+  </div>
+</section>
 
 <!-- contact section starts -->
 <section class="contact" id="contact">
-  
   <h2 class="heading"><i class="fas fa-headset"></i> Get in <span>Touch</span></h2>
 
   <div class="container">
@@ -338,113 +269,88 @@
       <div class="image-box">
         <img draggable="false" src="./assets/images/contact1.png" alt="">
       </div>
-    <form id="contact-form" action="https://formspree.io/f/mqaqpjjg" method="POST">
-      
-      <div class="form-group">
-        <div class="field">
-          <input type="text" name="name" placeholder="Name" required>
-          <i class='fas fa-user'></i>
+      <form id="contact-form" action="https://formspree.io/f/mqaqpjjg" method="POST">
+        <div class="form-group">
+          <div class="field">
+            <input type="text" name="name" placeholder="Name" required>
+            <i class='fas fa-user'></i>
+          </div>
+          <div class="field">
+            <input type="email" name="email" placeholder="Email" required>
+            <i class='fas fa-envelope'></i>
+          </div>
+          <div class="field">
+            <input type="text" name="phone" placeholder="Phone">
+            <i class='fas fa-phone-alt'></i>
+          </div>
+          <div class="message">
+            <textarea placeholder="Message" name="message" required></textarea>
+            <i class="fas fa-comment-dots"></i>
+          </div>
         </div>
-        <div class="field">
-          <input type="email" name="email" placeholder="Email" required>
-          <i class='fas fa-envelope'></i>
+        <input type="hidden" name="_subject" value="Portfolio Contact Form Submission">
+        <div class="button-area">
+          <button type="submit" id="submit-btn">Submit <i class="fa fa-paper-plane"></i></button>
         </div>
-        <div class="field">
-          <input type="text" name="phone" placeholder="Phone">
-          <i class='fas fa-phone-alt'></i>
-        </div>
-        <div class="message">
-        <textarea placeholder="Message" name="message" required></textarea>
-        <i class="fas fa-comment-dots"></i>
-        </div>
-        </div>
-      <input type="hidden" name="_subject" value="Portfolio Contact Form Submission">
-      <div class="button-area">
-        <button type="submit" id="submit-btn">
-          Submit <i class="fa fa-paper-plane"></i></button>
-      </div>
-    </form>
-  </div>
+      </form>
+    </div>
   </div>
 </section>
 <!-- contact section ends -->
 
-
 <!-- footer section starts -->
 <section class="footer">
-
   <div class="box-container">
+    <div class="box">
+      <h3>Rushabh's Portfolio</h3>
+      <p>Thank you for visiting my personal portfolio website. Connect with me over socials. <br/> <br/> Keep Rising 🚀. Connect with me over live chat!</p>
+    </div>
 
-      <div class="box">
-          <h3>Rushabh's Portfolio</h3>
-          <p>Thank you for visiting my personal portfolio website. Connect with me over socials. <br/> <br/> Keep Rising 🚀. Connect with me over live chat!</p>
-      </div>
+    <div class="box">
+      <h3>quick links</h3>
+      <a href="#home"><i class="fas fa-chevron-circle-right"></i> home</a>
+      <a href="#about"><i class="fas fa-chevron-circle-right"></i> about</a>
+      <a href="#education"><i class="fas fa-chevron-circle-right"></i> education</a>
+      <a href="#experience"><i class="fas fa-chevron-circle-right"></i> experience</a>
+      <a href="#skills"><i class="fas fa-chevron-circle-right"></i> skills</a>
+      <a href="#work"><i class="fas fa-chevron-circle-right"></i> projects</a>
+    </div>
 
-      <div class="box">
-          <h3>quick links</h3>
-          <a href="#home"><i class="fas fa-chevron-circle-right"></i> home</a>
-          <a href="#about"><i class="fas fa-chevron-circle-right"></i> about</a>
-          <a href="#education"><i class="fas fa-chevron-circle-right"></i> education</a>
-          <a href="#experience"><i class="fas fa-chevron-circle-right"></i> experience</a>
-          <a href="#skills"><i class="fas fa-chevron-circle-right"></i> skills</a>
-          
-          <a href="#work"><i class="fas fa-chevron-circle-right"></i> projects</a>
-          
+    <div class="box">
+      <h3>contact info</h3>
+      <div class="share">
+        <a href="mailto:rushabh@rushabh.tech" class="fas fa-envelope" aria-label="Email"></a>
+        <a href="https://www.linkedin.com/in/rushabhgandhi9" class="fab fa-linkedin" aria-label="LinkedIn" target="_blank"></a>
+        <a href="https://x.com/Rushabh999999" class="fab fa-twitter" aria-label="Twitter" target="_blank"></a>
+        <a href="https://www.instagram.com/rushabhgandhii/" class="fab fa-instagram" aria-label="Instagram" target="_blank"></a>
       </div>
-
-      <div class="box">
-          <h3>contact info</h3>
-          <div class="share">
-            <a href="mailto:rushabh@rushabh.tech" class="fas fa-envelope" aria-label="Email"></a>
-            <a href="https://www.linkedin.com/in/rushabhgandhi9" class="fab fa-linkedin" aria-label="LinkedIn" target="_blank"></a>
-            <a href="https://x.com/Rushabh999999" class="fab fa-twitter" aria-label="Twitter" target="_blank"></a>
-            <a href="https://www.instagram.com/rushabhgandhii/" class="fab fa-instagram" aria-label="Instagram" target="_blank"></a>
-            
-          </div>
-          <div class="contact-details">
-            <p class="contact-item"><i class="fas fa-envelope"></i><a href="mailto:rushabh@rushabh.tech">rushabh@rushabh.tech</a></p>
-            <p class="contact-item"><i class="fas fa-phone"></i>(312) 998-2997</p>
-          </div>
+      <div class="contact-details">
+        <p class="contact-item"><i class="fas fa-envelope"></i><a href="mailto:rushabh@rushabh.tech">rushabh@rushabh.tech</a></p>
+        <p class="contact-item"><i class="fas fa-phone"></i>(312) 998-2997</p>
       </div>
-      </div>
+    </div>
   </div>
 
   <h1 class="credit">Designed with <i class="fa fa-heart pulse"></i> by <a href="https://www.linkedin.com/in/rushabhgandhi9"> Rushabh Gandhi</a></h1>
-
 </section>
 <!-- footer section ends -->
 
-
 <!-- scroll top btn -->
 <a href="#home" aria-label="ScrollTop" class="fas fa-angle-up" id="scroll-top"></a>
-<!-- scroll back to top -->
 
-
-<!-- ==== ALL MAJOR JAVASCRIPT CDNS STARTS ==== -->
-<!-- jquery cdn -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-<!-- typed.js cdn -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.5/typed.min.js" integrity="sha512-1KbKusm/hAtkX5FScVR5G36wodIMnVd/aP04af06iyQTkD17szAMGNmxfNH+tEuFp3Og/P5G32L1qEC47CZbUQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-<!-- particle.js links -->
+<!-- ==== JS CDNs START ==== -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.5/typed.min.js" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="./assets/js/particles.min.js"></script>
 <script src="./assets/js/app.js"></script>
-
-<!-- vanilla tilt.js links -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js" integrity="sha512-SttpKhJqONuBVxbRcuH0wezjuX+BoFoli0yPsnrAADcHsQMW8rkR84ItFHGIkPvhnlRnE2FaifDOUw+EltbuHg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-<!-- scroll reveal anim -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://unpkg.com/scrollreveal"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 
-<script
-      type="text/javascript"
-      src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"
-    ></script>
+<!-- Calendly script (must be after the DOM for the widget exists) -->
+<script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
 
-<!-- ==== ALL MAJOR JAVASCRIPT CDNS ENDS ==== -->
-
+<!-- ==== JS CDNs END ==== -->
 <script src="./assets/js/script.js"></script>
-
 </body>
 </html>
