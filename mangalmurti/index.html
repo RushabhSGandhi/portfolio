@@ -1,0 +1,264 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diwali Grocery Billing System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        
+        <!-- New Bill Page -->
+        <div id="new-bill-page" class="page active">
+
+
+            <!-- Bill Info -->
+            <div class="bill-info-compact">
+                <button class="reset-btn-square header-reset" onclick="location.reload()" title="Reset All Quantities">
+                    <i class="fas fa-home"></i>
+                </button>
+                <div class="bill-inputs">
+                    <input type="text" id="customer-name" placeholder="Customer Name*" class="customer-name-input" required>
+                    <input type="text" id="city-name" placeholder="City">
+                    <input type="text" id="cashier-name" placeholder="Mobile">
+                </div>
+                <div class="nav-brand">
+                <i class="fas fa-store"></i>
+                <span style="color: white; font-weight: bold;">Mangalmurti Traders</span>
+            </div>
+                <div class="bill-details">
+                    <span>Bill No: <strong id="bill-no">5000</strong></span>
+                    <span><strong id="bill-datetime"></strong></span>
+                </div>
+                <div class="nav-role">
+                <button class="admin-btn" id="admin-access-btn">
+                    <i class="fas fa-user-shield"></i> Admin
+                </button>
+            </div>
+            </div>
+
+            <!-- Three Column Layout - All Items Display -->
+            <div class="items-columns">
+                <div class="column">
+                    <h3>Column A</h3>
+                    <div class="items-table">
+                        <table id="column-a-table">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Qty</th>
+                                    <th>Rate</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="column-a-tbody">
+                                <!-- Items will be populated here -->
+                            </tbody>
+                            <tfoot>
+                                <tr class="subtotal-row">
+                                    <td colspan="3">Subtotal:</td>
+                                    <td id="subtotal-a" class="subtotal-amount"> 0.0</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <h3>Column B</h3>
+                    <div class="items-table">
+                        <table id="column-b-table">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Qty</th>
+                                    <th>Rate</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="column-b-tbody">
+                                <!-- Items will be populated here -->
+                            </tbody>
+                            <tfoot>
+                                <tr class="subtotal-row">
+                                    <td colspan="3">Subtotal:</td>
+                                    <td id="subtotal-ab" class="subtotal-amount"> 0.0</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <h3>Column C</h3>
+                    <div class="items-table">
+                        <table id="column-c-table">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Qty</th>
+                                    <th>Rate</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="column-c-tbody">
+                                <!-- Items will be populated here -->
+                            </tbody>
+                            <tfoot>
+                                <tr class="subtotal-row total-row-final">
+                                    <td colspan="3" class="total-label">TOTAL:</td>
+                                    <td id="subtotal-abc" class="total-amount"> 0.0</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+        <!-- Bill Print View -->
+        <div id="bill-print-page" class="page print-page">
+            <div class="print-header">
+                <button class="btn btn-secondary no-print" onclick="validateAndPrint()">
+                    <i class="fas fa-print"></i> Print
+                </button>
+                <button class="btn btn-primary no-print" onclick="downloadPDF()">
+                    <i class="fas fa-file-pdf"></i> Download PDF
+                </button>
+                <button class="btn btn-secondary no-print" onclick="showPage('new-bill')">
+                    <i class="fas fa-arrow-left"></i> Back to New Bill
+                </button>
+            </div>
+            <div class="invoice" id="invoice-content">
+                <!-- Invoice content will be generated here -->
+            </div>
+        </div>
+
+        <!-- Admin Catalog Management Page -->
+        <div id="admin-catalog-page" class="page">
+            <div class="page-header">
+                <h1><i class="fas fa-boxes"></i> Catalog Management</h1>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="showPage('new-bill')">
+                        <i class="fas fa-arrow-left"></i> Back to Billing
+                    </button>
+                    <button class="btn btn-primary" id="export-catalog">
+                        <i class="fas fa-download"></i> Export Catalog
+                    </button>
+                    <button class="btn btn-secondary" id="import-catalog">
+                        <i class="fas fa-upload"></i> Import Catalog
+                    </button>
+                </div>
+            </div>
+
+            <!-- Catalog Stats -->
+            <div class="catalog-stats" id="catalog-stats">
+                <i class="fas fa-chart-bar"></i>
+                <span>Loading catalog statistics...</span>
+            </div>
+
+            <!-- Add New Item Form -->
+            <div class="add-item-section">
+                <h3><i class="fas fa-plus-circle"></i> Add New Item</h3>
+                <form id="add-item-form" class="add-item-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="new-item-name">Item Name:</label>
+                            <input type="text" id="new-item-name" placeholder="Enter item name" required autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="new-item-rate">Rate:</label>
+                            <input type="number" id="new-item-rate" placeholder="0.0" step="0.1" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="new-item-position">Position:</label>
+                            <input type="number" id="new-item-position" placeholder="1" step="1" min="1" value="1">
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="has-variants-checkbox" onchange="toggleVariantsSection()"> 
+                                Has variants (dropdown)
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Add Item
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Variants Section (hidden by default) -->
+                    <div id="variants-section" style="display: none; margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 4px;">
+                        <h4 style="margin-top: 0; font-size: 0.95rem;">
+                            <i class="fas fa-list"></i> Variants (Options)
+                        </h4>
+                        <div id="variants-list"></div>
+                        <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+                            <input type="text" id="variant-name-input" placeholder="Option name (e.g., Lux)" style="flex: 2; min-width: 200px; padding: 0.5rem; font-size: 0.95rem;">
+                            <input type="number" id="variant-rate-input" placeholder="Rate" step="0.1" min="0" style="width: 120px; padding: 0.5rem; font-size: 0.95rem;">
+                            <button type="button" onclick="addVariant()" class="btn btn-sm" style="padding: 0.4rem 0.8rem; white-space: nowrap;">
+                                <i class="fas fa-plus"></i> Add Variant
+                            </button>
+                        </div>
+                        <small style="color: #666; display: block; margin-top: 0.5rem;">
+                            Base rate is for the item itself. Variants are additional options with different rates.
+                        </small>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Search and Filter -->
+            <div class="catalog-controls">
+                <div class="search-section">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="catalog-search" placeholder="Search items..." autocomplete="off">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Catalog Items Table -->
+            <div class="catalog-table-section">
+                <div class="table-container">
+                    <table class="catalog-table">
+                        <thead>
+                            <tr>
+                                <th>Position</th>
+                                <th>Item Name</th>
+                                <th>Rate</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="catalog-items-tbody">
+                            <!-- Catalog items will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="firebase-config.js"></script>
+    <script src="config.js"></script>
+    <script src="data.js"></script>
+    <script src="billing.js"></script>
+    <script src="catalog.js"></script>
+    <script src="app.js"></script>
+    <script src="firebase-init.js"></script>
+</body>
+</html>
+
+
