@@ -1203,24 +1203,37 @@ body {
         justify-content: center;
     }
     
-    /* Hide admin button on mobile */
-    .admin-btn {
+    /* Hide admin button and nav-role container on mobile */
+    .admin-btn,
+    .nav-role {
         display: none !important;
     }
     
     /* Style customer name input like city/mobile inputs on mobile */
-    .customer-name-input {
+    .bill-inputs input#customer-name,
+    .bill-inputs .customer-name-input {
         width: 100px !important;
         padding: 0.3rem 0.5rem !important;
         font-size: 0.85rem !important;
         border: 1px solid #ddd !important;
+        border-color: #ddd !important;
         border-radius: 4px !important;
         background: white !important;
+        box-shadow: none !important;
     }
     
-    .customer-name-input:focus {
+    .bill-inputs input#customer-name:focus,
+    .bill-inputs .customer-name-input:focus {
         border-color: #ff6b35 !important;
         outline: none !important;
+        box-shadow: 0 0 5px rgba(255, 107, 53, 0.3) !important;
+    }
+    
+    /* Make all bill inputs same size on mobile */
+    .bill-inputs input {
+        width: 100px !important;
+        padding: 0.3rem 0.5rem !important;
+        font-size: 0.85rem !important;
     }
     
     .page-header {
