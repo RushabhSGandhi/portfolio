@@ -253,6 +253,17 @@ body {
     color: white;
 }
 
+/* Hidden print-only elements */
+.print-customer-info,
+.print-datetime-info,
+.print-store-name {
+    display: none;
+}
+
+.print-items-container {
+    display: none;
+}
+
 /* Items Display Columns */
 .items-columns {
     display: grid;
@@ -266,6 +277,10 @@ body {
     border-radius: 8px;
     padding: 1rem;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.column.print-hide-column {
+    display: none !important;
 }
 
 .column h3 {
@@ -288,6 +303,13 @@ body {
     height: 18px;
 }
 
+.items-table .item-cell {
+    height: auto !important;
+    min-height: 26px;
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.25rem !important;
+}
+
 .items-table th {
     background: #f8f9fa;
     font-weight: bold;
@@ -300,20 +322,21 @@ body {
 /* Column widths and alignment */
 .items-table th:nth-child(1),
 .items-table td:nth-child(1) {
-    width: 45%; /* Item column */
+    width: 44%; /* Item column */
     text-align: left;
     font-weight: bold;
 }
 
 .items-table th:nth-child(2),
 .items-table td:nth-child(2) {
-    width: 15%; /* Qty column - narrower */
+    width: 12%; /* Qty column - narrower */
     text-align: center;
+    padding-left: 0.4rem;
 }
 
 .items-table th:nth-child(3),
 .items-table td:nth-child(3) {
-    width: 20%; /* Rate column */
+    width: 24%; /* Rate column */
     text-align: right;
 }
 
@@ -501,10 +524,10 @@ body {
 /* Inline variant dropdown in item name column */
 .variant-select-inline {
     width: 100%;
-    padding: 0.3rem 0.5rem;
+    padding: 0.35rem 0.5rem;
     border: none;
     border-radius: 0;
-    font-size: 0.8rem;
+    font-size: 0.82rem;
     color: #333;
     background-color: transparent;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
@@ -517,6 +540,8 @@ body {
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
+    line-height: 1.4;
+    min-height: 28px;
 }
 
 .variant-select-inline:hover {
@@ -845,11 +870,16 @@ body {
     /* A4 page settings */
     @page {
         size: A4;
-        margin: 0.5cm;
+        margin: 0.5cm 0.1cm;
     }
 
     * {
         page-break-inside: avoid !important;
+    }
+
+    body {
+        margin: 0 0.1cm !important;
+        padding: 0 !important;
     }
 
     .no-print {
@@ -888,15 +918,20 @@ body {
         display: flex !important;
         flex-direction: row !important;
         align-items: center !important;
-        gap: 1.5rem !important;
+        gap: 2rem !important;
         background: none !important;
         box-shadow: none !important;
-        padding: 0.3rem 0 !important;
-        margin-bottom: 0.5rem !important;
+    padding: 0.15rem 1rem !important;
+    margin-top: 0 !important;
+    margin-bottom: 0.12rem !important;
         height: auto !important;
         border-bottom: 2px solid #000 !important;
         page-break-after: avoid !important;
         page-break-inside: avoid !important;
+        margin-left: -1rem !important;
+        margin-right: -1rem !important;
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
     }
 
     /* Hide reset button and admin button */
@@ -907,79 +942,192 @@ body {
         display: none !important;
     }
 
-    /* Customer info on one line */
+    /* Hide original customer and city inputs in print */
     .bill-inputs {
-        display: flex !important;
-        flex-direction: row !important;
-        gap: 1rem !important;
+        display: none !important;
+    }
+
+    /* Show combined customer info - LEFT SIDE */
+    .print-customer-info {
+        display: block !important;
+        font-size: 14px !important;
+        font-weight: 700 !important;
+        color: black !important;
+        padding: 0.2rem 0 0.2rem 2ch !important;
+        flex: 1 !important;
+        text-align: left !important;
+    }
+    
+    /* Store name in center */
+    .print-store-name {
+        display: block !important;
+        font-size: 16px !important;
+        font-weight: 900 !important;
+        color: black !important;
+        text-align: center !important;
+        flex: 1 !important;
+        letter-spacing: 0.5px !important;
+    }
+
+    /* Hide original bill details */
+    .bill-details {
+        display: none !important;
+    }
+    
+    /* Show combined mobile and datetime info - RIGHT SIDE */
+    .print-datetime-info {
+        display: block !important;
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        color: black !important;
+        padding: 0.2rem 0 !important;
+        text-align: right !important;
         flex: 1 !important;
     }
-
-    .bill-inputs input {
-        border: none !important;
-        background: none !important;
-        padding: 0 !important;
-        font-size: 10px !important;
-        font-weight: 600 !important;
-        color: black !important;
-        width: auto !important;
-    }
-
-    .bill-inputs input::placeholder {
-        color: transparent !important;
-    }
-
-    /* Bill details on same line */
-    .bill-details {
-        display: flex !important;
-        gap: 1rem !important;
-        font-size: 10px !important;
-        font-weight: 600 !important;
-        white-space: nowrap !important;
-    }
     
-    /* Print items in 3 columns side by side */
+    /* Hide interactive grid, use dynamic print container */
     .items-columns {
+        display: none !important;
+    }
+
+    .print-items-container {
         display: grid !important;
-        grid-template-columns: repeat(3, 1fr) !important;
-        gap: 0.5rem !important;
-        page-break-inside: avoid !important;
-        page-break-after: avoid !important;
+        gap: 0 !important;
         width: 100% !important;
         margin-top: 0.3rem !important;
-        break-inside: avoid !important;
-    }
-    
-    .column {
-        page-break-inside: avoid !important;
-        break-inside: avoid !important;
-        display: block !important;
-        margin-bottom: 0 !important;
-        padding-bottom: 0 !important;
     }
 
-    .column h3 {
-        font-size: 11px !important;
-        margin-bottom: 0.2rem !important;
-        font-weight: bold !important;
-        page-break-after: avoid !important;
+    .print-items-container.columns-1 {
+        grid-template-columns: 1fr !important;
     }
-    
-    .item-group {
+
+    .print-items-container.columns-2 {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0 !important;
+    }
+
+    .print-items-container.columns-3 {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+
+    .print-items-container .print-column {
         page-break-inside: avoid !important;
         break-inside: avoid !important;
+        background: white !important;
+        padding: 0 0.75rem !important;
+        margin: 0 !important;
+        border: none !important;
+        border-right: 1px solid #ccc !important;
     }
     
-    .item-group h3 {
-        font-size: 10px !important;
-        margin-bottom: 0.2rem !important;
-        font-weight: bold !important;
+    .print-items-container .print-column:last-child {
+        border-right: none !important;
     }
-    
-    /* Smaller font sizes for items */
-    .items-table {
+
+    .print-items-table {
         width: 100% !important;
-        font-size: 8px !important;
+        border-collapse: collapse !important;
+    }
+
+    .print-items-table thead tr {
+        border-bottom: 2px solid #000 !important;
+    }
+
+    .print-items-table th,
+    .print-items-table td {
+        padding: 0.15rem 0.3rem !important;
+        font-size: 14px !important;
+        font-weight: 700 !important;
+        color: #000 !important;
+        border-bottom: 1px solid #ddd !important;
+    }
+
+    .print-items-table th {
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        text-transform: uppercase !important;
+        background: transparent !important;
+    }
+
+    .print-items-table tfoot td {
+        font-size: 16px !important;
+        font-weight: 600 !important;
+        padding: 0.3rem 0.3rem !important;
+        border-top: 2px solid #000 !important;
+        border-bottom: none !important;
+    }
+    
+    /* Right align the grand total number (last td in footer) */
+    .print-items-table tfoot td:last-child {
+        text-align: right !important;
+        font-weight: 850 !important;
+    }
+    
+    /* Style for item count label */
+    .print-items-table tfoot .item-count-label {
+        font-size: 17px !important;
+        font-weight: 800 !important;
+    }
+
+    .print-items-table td:nth-child(2) {
+        text-align: center !important;
+    }
+
+    .print-items-table td:nth-child(3),
+    .print-items-table td:nth-child(4) {
+        text-align: right !important;
+    }
+
+    .print-items-table th:nth-child(1) {
+        width: 44% !important;
+        text-align: left !important;
+    }
+
+    .print-items-table td:nth-child(1) {
+        width: 44% !important;
+        text-align: left !important;
+    }
+
+    .print-items-table th:nth-child(2) {
+        width: 12% !important;
+        padding-left: 0.4rem !important;
+        text-align: left !important;
+    }
+
+    .print-items-table td:nth-child(2) {
+        width: 12% !important;
+        padding-left: 0.4rem !important;
+    }
+
+    .print-items-table th:nth-child(3) {
+        width: 24% !important;
+        text-align: right !important;
+    }
+
+    .print-items-table th:nth-child(4) {
+        width: 20% !important;
+        text-align: right !important;
+    }
+
+    .print-items-table th:nth-child(3) {
+        width: 24% !important;
+        text-align: right !important;
+    }
+
+    .print-items-table th:nth-child(4) {
+        width: 20% !important;
+        text-align: right !important;
+    }
+
+    .print-items-table td:nth-child(3),
+    .print-items-table td:nth-child(4) {
+        width: 24% !important;
+    }
+
+    /* Hide unused column helpers */
+    .column,
+    .item-group {
+        display: none !important;
     }
 
     .items-table table {
@@ -987,14 +1135,17 @@ body {
     }
     
     .items-table th {
-        padding: 0.1rem 0.2rem !important;
-        font-size: 9px !important;
-        font-weight: bold !important;
+        padding: 0.12rem 0.25rem !important;
+        font-size: 11px !important;
+        font-weight: 800 !important;
+        color: #000 !important;
     }
 
     .items-table td {
-        padding: 0.1rem 0.2rem !important;
-        font-size: 8px !important;
+        padding: 0.12rem 0.25rem !important;
+        font-size: 10px !important;
+        font-weight: 700 !important;
+        color: #000 !important;
     }
 
     /* Override all column-specific styles */
@@ -1002,27 +1153,35 @@ body {
     .items-table th:nth-child(2),
     .items-table th:nth-child(3),
     .items-table th:nth-child(4) {
-        font-size: 9px !important;
-        padding: 0.1rem 0.2rem !important;
+        font-size: 11px !important;
+        padding: 0.12rem 0.25rem !important;
     }
 
     .items-table td:nth-child(1),
     .items-table td:nth-child(2),
     .items-table td:nth-child(3),
     .items-table td:nth-child(4) {
-        font-size: 8px !important;
-        padding: 0.1rem 0.2rem !important;
+        font-size: 10px !important;
+        padding: 0.12rem 0.25rem !important;
     }
 
     /* Reduce QTY column width */
     .items-table th:nth-child(2),
     .items-table td:nth-child(2) {
-        width: 8% !important;
+        width: 12% !important;
+        padding-left: 0.4rem !important;
+    }
+
+    .items-table th:nth-child(3),
+    .items-table td:nth-child(3) {
+        width: 24% !important;
     }
 
     /* Item name specifically */
     .item-name {
-        font-size: 8px !important;
+        font-size: 10px !important;
+        font-weight: 700 !important;
+        color: #000 !important;
     }
     
     /* Variant dropdown wrapper alignment */
@@ -1034,12 +1193,21 @@ body {
     .items-table input,
     .items-table .qty-input,
     .items-table .rate-input {
-        font-size: 7px !important;
-        padding: 0.05rem 0.1rem !important;
+        font-size: 10px !important;
+        font-weight: 700 !important;
+        padding: 0.1rem 0.2rem !important;
         height: auto !important;
         border: none !important;
         background: transparent !important;
         text-align: center !important;
+        color: #000 !important;
+    }
+
+    .items-table .qty-cell,
+    .items-table .rate-cell,
+    .items-table .total-cell {
+        color: #000 !important;
+        font-weight: 700 !important;
     }
     
     /* For variant dropdowns in print, show selected value as text */
@@ -1050,11 +1218,17 @@ body {
         border: none !important;
         background: transparent !important;
         background-image: none !important;
-        color: #333 !important;
-        font-weight: 600 !important;
-        font-size: 8px !important;
-        padding: 0.3rem !important;
+        color: #000 !important;
+        font-weight: 700 !important;
+        font-size: 10px !important;
+        padding: 0.1rem 0.2rem !important;
         text-align: left !important;
+    }
+
+    .variant-select-inline option {
+        color: #000 !important;
+        font-weight: 700 !important;
+        font-size: 10px !important;
     }
 
     .items-table input::-webkit-outer-spin-button,
@@ -1063,14 +1237,9 @@ body {
         margin: 0 !important;
     }
 
-    /* Hide rate and total for items without quantity */
-    .item-row:not(.has-quantity) .rate-cell,
-    .item-row:not(.has-quantity) .total-cell {
-        visibility: hidden !important;
-    }
-
-    .item-row:not(.has-quantity) .qty-cell {
-        visibility: hidden !important;
+    /* Hide entire row for items without quantity */
+    .item-row:not(.has-quantity) {
+        display: none !important;
     }
 
     /* Subtotal rows */
@@ -1791,5 +1960,70 @@ body {
     .item-actions-cell .btn-icon {
         padding: 0.3rem;
         margin: 0 0.1rem;
+    }
+}
+
+/* Devanagari Toggle Button */
+.devanagari-toggle-btn {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.devanagari-toggle-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.devanagari-toggle-btn.active {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.devanagari-toggle-btn.active::after {
+    content: '✓';
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 20px;
+    height: 20px;
+    background: #4caf50;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+@media print {
+    .devanagari-toggle-btn {
+        display: none !important;
+    }
+    
+    /* Highlight rows with rate changes in print */
+    .print-items-table tr.rate-changed-row {
+        background-color: #fffacd !important; /* Light yellow background */
+    }
+    
+    /* Box around changed rate in print */
+    .print-items-table td.rate-changed-cell {
+        border: 2px solid #e0dad6 !important;
+        padding: 0.1rem 0.2rem !important;
+        font-weight: 900 !important;
+        background-color: #fff3e0 !important; /* Light orange background */
     }
 }

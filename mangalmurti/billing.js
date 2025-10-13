@@ -1,4 +1,15 @@
 ﻿// Billing Functions and Logic
+
+// Helper function to format numbers without unnecessary decimals
+function formatNumber(value) {
+    const num = parseFloat(value);
+    if (isNaN(num)) {
+        return '0';
+    }
+    // Remove unnecessary decimal (.0)
+    return num % 1 === 0 ? num.toString() : num.toFixed(1);
+}
+
 class BillingManager {
     constructor() {
         this.itemQuantities = {}; // Store item quantities by item ID
@@ -149,14 +160,14 @@ class BillingManager {
                 <input type="number" 
                        class="rate-input" 
                        id="rate-input-${column}-${index}"
-                       value="${item.rate.toFixed(1)}" 
+                       value="${formatNumber(item.rate)}" 
                        min="0" 
                        step="0.01" 
                        onchange="billingManager.updateItemRate('${column}', ${index}, this.value)"
                        placeholder="Rate">
             </td>
             <td class="total-cell" id="total-${column}-${index}">
-                 0.0
+                 
             </td>
         `;
         
@@ -171,13 +182,13 @@ class BillingManager {
         
         if (selectedValue === 'base') {
             // Base item selected, use item's own rate
-            rateInput.value = item.rate.toFixed(1);
+            rateInput.value = formatNumber(item.rate);
         } else if (selectedValue.startsWith('variant-')) {
             // Variant selected
             const variantIndex = parseInt(selectedValue.replace('variant-', ''));
             const variant = item.variants[variantIndex];
             if (variant) {
-                rateInput.value = variant.rate.toFixed(1);
+                rateInput.value = formatNumber(variant.rate);
             }
         }
         
@@ -270,7 +281,7 @@ class BillingManager {
                 
                 const total = qty * currentRate;
                 const totalCell = document.getElementById(`total-${column}-${index}`);
-                totalCell.textContent = ` ${total.toFixed(1)}`;
+                totalCell.textContent = ` ${formatNumber(total)}`;
                 
                 // Check if rate was manually changed from original
                 // Use variant key if a variant is selected
@@ -393,7 +404,7 @@ class BillingManager {
         if (qty > 0) {
             const total = qty * rate;
             if (totalCell) {
-                totalCell.textContent = ` ${total.toFixed(1)}`;
+                totalCell.textContent = ` ${formatNumber(total)}`;
                 
                 // Add red highlighting to total if rate was manually changed
                 if (rateChanged) {
@@ -444,7 +455,7 @@ class BillingManager {
                 if (savedRates[item.name]) {
                     const rateInput = document.getElementById(`rate-input-${column}-${index}`);
                     if (rateInput) {
-                        rateInput.value = savedRates[item.name].toFixed(1);
+                        rateInput.value = formatNumber(savedRates[item.name]);
                         item.rate = savedRates[item.name];
                         
                         // Apply highlighting
@@ -523,9 +534,9 @@ class BillingManager {
         const columnCTotal = this.calculateColumnSubtotal('C');
         
         // Update subtotal displays (cumulative)
-        document.getElementById('subtotal-a').textContent = ` ${columnATotal.toFixed(1)}`;
-        document.getElementById('subtotal-ab').textContent = ` ${(columnATotal + columnBTotal).toFixed(1)}`;
-        document.getElementById('subtotal-abc').textContent = ` ${(columnATotal + columnBTotal + columnCTotal).toFixed(1)}`;
+        document.getElementById('subtotal-a').textContent = ` ${formatNumber(columnATotal)}`;
+        document.getElementById('subtotal-ab').textContent = ` ${formatNumber(columnATotal + columnBTotal)}`;
+        document.getElementById('subtotal-abc').textContent = ` ${formatNumber(columnATotal + columnBTotal + columnCTotal)}`;
     }
 
     updateTotals() {
@@ -734,9 +745,9 @@ class BillingManager {
                         ${billLines.map(line => `
                             <tr>
                                 <td>${line.itemName}</td>
-                                <td> ${line.rate.toFixed(1)}</td>
+                                <td> ${formatNumber(line.rate)}</td>
                                 <td>${line.qty}</td>
-                                <td> ${line.amount.toFixed(1)}</td>
+                                <td> ${formatNumber(line.amount)}</td>
                             </tr>
                         `).join('')}
                     </tbody>
@@ -745,15 +756,15 @@ class BillingManager {
                 <div class="totals">
                     <div class="total-row">
                         <span>Subtotal:</span>
-                        <span> ${bill.subtotal.toFixed(1)}</span>
+                        <span> ${formatNumber(bill.subtotal)}</span>
                     </div>
                     <div class="total-row">
                         <span>Round Off:</span>
-                        <span> ${bill.round_off.toFixed(1)}</span>
+                        <span> ${formatNumber(bill.round_off)}</span>
                     </div>
                     <div class="total-row grand-total">
                         <span>Grand Total:</span>
-                        <span> ${bill.grand_total.toFixed(1)}</span>
+                        <span> ${formatNumber(bill.grand_total)}</span>
                     </div>
                 </div>
                 
@@ -858,15 +869,15 @@ class BillingManager {
                     <div class="totals-table">
                         <div class="total-row">
                             <span>Subtotal:</span>
-                            <span> ${billData.subtotal.toFixed(1)}</span>
+                            <span> ${formatNumber(billData.subtotal)}</span>
                         </div>
                         <div class="total-row">
                             <span>Round Off:</span>
-                            <span> ${billData.roundOff.toFixed(1)}</span>
+                            <span> ${formatNumber(billData.roundOff)}</span>
                         </div>
                         <div class="total-row grand-total">
                             <span><strong>Grand Total:</strong></span>
-                            <span><strong> ${billData.grandTotal.toFixed(1)}</strong></span>
+                            <span><strong> ${formatNumber(billData.grandTotal)}</strong></span>
                         </div>
                     </div>
                 </div>
@@ -899,9 +910,9 @@ class BillingManager {
             html += `
                 <tr>
                     <td>${line.itemName}</td>
-                    <td> ${line.rate.toFixed(1)}</td>
+                    <td> ${formatNumber(line.rate)}</td>
                     <td>${line.qty}</td>
-                    <td> ${line.amount.toFixed(1)}</td>
+                    <td> ${formatNumber(line.amount)}</td>
                 </tr>
             `;
         });

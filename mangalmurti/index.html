@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diwali Grocery Billing System</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="bills-styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
     <!-- Firebase SDK -->
@@ -29,6 +30,10 @@
                     <input type="text" id="city-name" placeholder="City">
                     <input type="text" id="cashier-name" placeholder="Mobile">
                 </div>
+                <!-- Print-only combined customer info -->
+                <div class="print-customer-info" id="print-customer-info"></div>
+                <!-- Print-only store name in center -->
+                <div class="print-store-name">मंगलमूर्ती ट्रेडर्स</div>
                 <div class="nav-brand">
                 <i class="fas fa-store"></i>
                 <span style="color: white; font-weight: bold;">Mangalmurti Traders</span>
@@ -37,6 +42,8 @@
                     <span>Bill No: <strong id="bill-no">5000</strong></span>
                     <span><strong id="bill-datetime"></strong></span>
                 </div>
+                <!-- Print-only combined mobile and datetime -->
+                <div class="print-datetime-info" id="print-datetime-info"></div>
                 <div class="nav-role">
                 <button class="admin-btn" id="admin-access-btn">
                     <i class="fas fa-user-shield"></i> Admin
@@ -46,7 +53,7 @@
 
             <!-- Three Column Layout - All Items Display -->
             <div class="items-columns">
-                <div class="column">
+                <div class="column" id="column-a">
                     <h3>Column A</h3>
                     <div class="items-table">
                         <table id="column-a-table">
@@ -71,7 +78,7 @@
                     </div>
                 </div>
 
-                <div class="column">
+                <div class="column" id="column-b">
                     <h3>Column B</h3>
                     <div class="items-table">
                         <table id="column-b-table">
@@ -96,7 +103,7 @@
                     </div>
                 </div>
 
-                <div class="column">
+                <div class="column" id="column-c">
                     <h3>Column C</h3>
                     <div class="items-table">
                         <table id="column-c-table">
@@ -121,6 +128,9 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Print-only dynamic items container -->
+            <div id="print-items-container" class="print-items-container"></div>
         </div>
 
 
@@ -152,6 +162,9 @@
                 <div class="header-actions">
                     <button class="btn btn-secondary" onclick="showPage('new-bill')">
                         <i class="fas fa-arrow-left"></i> Back to Billing
+                    </button>
+                    <button class="btn btn-primary" onclick="showPage('past-bills')">
+                        <i class="fas fa-receipt"></i> Past Bills
                     </button>
                     <button class="btn btn-primary" id="export-catalog">
                         <i class="fas fa-download"></i> Export Catalog
@@ -247,9 +260,48 @@
                 </div>
             </div>
         </div>
+
+        <!-- Past Bills Page -->
+        <div id="past-bills-page" class="page">
+            <div class="page-header">
+                <h1><i class="fas fa-receipt"></i> Past Bills</h1>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="showPage('admin-catalog')">
+                        <i class="fas fa-arrow-left"></i> Back to Catalog
+                    </button>
+                    <button class="btn btn-primary" onclick="refreshBillsList()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="bills-search-section">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="bills-search" placeholder="Search by name, city, mobile, amount, date..." autocomplete="off">
+                </div>
+            </div>
+
+            <!-- Bills List -->
+            <div class="bills-list" id="bills-list">
+                <p style="text-align: center; color: #666; padding: 2rem;">Loading bills...</p>
+            </div>
+        </div>
     </div>
 
+    <!-- Bill Detail Modal -->
+    <div class="modal" id="bill-detail-modal">
+        <div class="modal-content bill-detail-content">
+            <button class="modal-close" onclick="closeBillDetail()">&times;</button>
+            <div id="bill-detail-body"></div>
+        </div>
+    </div>
 
+    <!-- Devanagari Toggle Button -->
+    <button class="devanagari-toggle-btn" id="devanagari-toggle" title="Toggle Devanagari Numbers in Print">
+        <i class="fas fa-language"></i>
+    </button>
 
     <script src="firebase-config.js"></script>
     <script src="config.js"></script>
@@ -258,6 +310,931 @@
     <script src="catalog.js"></script>
     <script src="app.js"></script>
     <script src="firebase-init.js"></script>
+    <script src="bill-storage.js"></script>
+    
+    <!-- Print handler for combined customer info and dynamic columns -->
+    <script>
+        // ===== BILL MANAGEMENT FUNCTIONS (GLOBAL) =====
+        
+        // Load bill into the new bill page (for new tab)
+        async function loadBillIntoNewBill(billId) {
+            try {
+                // Wait for billingManager to be ready
+                await new Promise(resolve => {
+                    if (typeof billingManager !== 'undefined') {
+                        resolve();
+                    } else {
+                        const checkInterval = setInterval(() => {
+                            if (typeof billingManager !== 'undefined') {
+                                clearInterval(checkInterval);
+                                resolve();
+                            }
+                        }, 100);
+                    }
+                });
+
+                const bill = await billStorageService.getBillById(billId);
+                if (!bill) {
+                    alert('Bill not found');
+                    return;
+                }
+
+                // Populate the bill header info
+                document.getElementById('customer-name').value = bill.customerName || '';
+                document.getElementById('city-name').value = bill.city || '';
+                document.getElementById('cashier-name').value = bill.mobile || '';
+                document.getElementById('bill-datetime').textContent = bill.dateTime || '';
+                document.getElementById('bill-no').textContent = bill.billNo || '';
+
+                // Wait for items to be fully rendered by billingManager
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                // Populate items into the columns
+                const items = bill.items || [];
+                let loadedCount = 0;
+                
+                items.forEach(item => {
+                    // Find the item row by name
+                    const itemNameElements = document.querySelectorAll('.item-name, .variant-select-inline');
+                    
+                    for (let element of itemNameElements) {
+                        let itemName = '';
+                        let row = element.closest('.item-row');
+                        
+                        if (!row) continue;
+                        
+                        // Check if it's a dropdown or regular name
+                        if (element.classList.contains('variant-select-inline')) {
+                            // Handle variant items
+                            const baseItemName = element.getAttribute('data-item-name');
+                            const selectedOption = Array.from(element.options).find(opt => {
+                                const optionText = opt.textContent.trim();
+                                return optionText === item.name || 
+                                       `${baseItemName}` === item.name ||
+                                       optionText.includes(item.name) ||
+                                       item.name.includes(optionText);
+                            });
+                            
+                            if (selectedOption) {
+                                element.value = selectedOption.value;
+                                // Trigger change event to update rate
+                                const changeEvent = new Event('change', { bubbles: true });
+                                element.dispatchEvent(changeEvent);
+                                itemName = item.name;
+                            }
+                        } else {
+                            // Regular item without variants
+                            itemName = element.getAttribute('data-item-name') || element.textContent.trim();
+                        }
+                        
+                        if (itemName === item.name) {
+                            // Found the matching item, populate quantity and rate
+                            const qtyInput = row.querySelector('.qty-input');
+                            const rateInput = row.querySelector('.rate-input');
+                            
+                            if (qtyInput) {
+                                const qty = item.quantity || item.qty || '';
+                                
+                                // Get column and index from the input ID (format: "qty-A-0" not "qty-input-A-0")
+                                const inputId = qtyInput.id; // e.g., "qty-A-0"
+                                const match = inputId.match(/qty-([ABC])-(\d+)/);
+                                
+                                if (match) {
+                                    const column = match[1];
+                                    const index = parseInt(match[2]);
+                                    
+                                    console.log(`Loading ${item.name}: qty=${qty}, column=${column}, index=${index}`);
+                                    
+                                    // Set the quantity value
+                                    qtyInput.value = qty;
+                                    
+                                    // Set rate first if it's custom
+                                    if (rateInput && item.rate) {
+                                        const currentRate = parseFloat(rateInput.value) || 0;
+                                        const savedRate = parseFloat(item.rate) || 0;
+                                        
+                                        if (Math.abs(currentRate - savedRate) > 0.01) {
+                                            rateInput.value = item.rate;
+                                        }
+                                    }
+                                    
+                                    // Call updateItemQuantity which will calculate totals
+                                    if (billingManager && billingManager.updateItemQuantity) {
+                                        billingManager.updateItemQuantity(column, index, qty);
+                                        loadedCount++;
+                                    } else {
+                                        console.error('billingManager.updateItemQuantity not found');
+                                    }
+                                }
+                            }
+                            
+                            break; // Found and populated, move to next item
+                        }
+                    }
+                });
+
+                // Update all totals after loading all items
+                console.log(`Attempting to load ${items.length} items, successfully loaded ${loadedCount}`);
+                
+                if (typeof billingManager !== 'undefined' && billingManager.updateTotals) {
+                    // Multiple updates with delays to ensure everything calculates
+                    setTimeout(() => {
+                        console.log('First update totals call...');
+                        billingManager.updateTotals();
+                    }, 100);
+                    
+                    setTimeout(() => {
+                        console.log('Second update totals call...');
+                        billingManager.updateTotals();
+                        console.log('Totals updated. Final loaded count:', loadedCount);
+                    }, 300);
+                } else {
+                    console.error('billingManager not available!');
+                }
+
+            } catch (error) {
+                console.error('Error loading bill:', error);
+                alert('Error loading bill for editing');
+            }
+        }
+        
+        // Open saved bill in a new tab for editing
+        window.loadSavedBillForEditing = function(billId) {
+            // Store the bill ID in sessionStorage
+            sessionStorage.setItem('loadBillId', billId);
+            
+            // Open in new tab
+            window.open(window.location.href, '_blank');
+        };
+        
+        // Print a saved bill directly (without editing)
+        window.printSavedBill = async function(billId) {
+            try {
+                const bill = await billStorageService.getBillById(billId);
+                if (!bill) {
+                    alert('Bill not found');
+                    return;
+                }
+
+                // Switch to the new-bill page (where print layout is)
+                showPage('new-bill');
+
+                // Wait a moment for page transition
+                await new Promise(resolve => setTimeout(resolve, 100));
+
+                // Populate the print layout with saved bill data
+                document.getElementById('customer-name').value = bill.customerName || '';
+                document.getElementById('city-name').value = bill.city || '';
+                document.getElementById('cashier-name').value = bill.mobile || '';
+                document.getElementById('bill-datetime').textContent = bill.dateTime || '';
+                document.getElementById('bill-no').textContent = bill.billNo || '';
+
+                // Update the print header
+                updatePrintHeader();
+
+                // Clear existing print container
+                const printContainer = document.getElementById('print-items-container');
+                printContainer.innerHTML = '';
+                printContainer.classList.remove('columns-1', 'columns-2', 'columns-3');
+                printContainer.classList.add('columns-2');
+
+                const items = bill.items || [];
+                if (!items.length) {
+                    alert('No items in this bill');
+                    return;
+                }
+
+                // Calculate grand total
+                let grandTotal = 0;
+                items.forEach(item => {
+                    const total = parseFloat(item.total) || 0;
+                    grandTotal += total;
+                });
+
+                const ITEMS_PER_PAGE = MAX_PRINT_ROWS_PER_COLUMN * 2; // 84 items per page
+                const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE);
+
+                for (let page = 0; page < totalPages; page++) {
+                    const pageStartIndex = page * ITEMS_PER_PAGE;
+                    const pageEndIndex = Math.min(pageStartIndex + ITEMS_PER_PAGE, items.length);
+                    const pageItems = items.slice(pageStartIndex, pageEndIndex);
+
+                    if (page > 0) {
+                        const pageBreak = document.createElement('div');
+                        pageBreak.className = 'page-break';
+                        printContainer.appendChild(pageBreak);
+                    }
+
+                    const column1Items = pageItems.slice(0, MAX_PRINT_ROWS_PER_COLUMN);
+                    const column2Items = pageItems.slice(MAX_PRINT_ROWS_PER_COLUMN);
+
+                    // Column 1
+                    const columnDiv1 = document.createElement('div');
+                    columnDiv1.className = 'print-column';
+                    const table1 = document.createElement('table');
+                    table1.className = 'print-items-table';
+
+                    const tbody1 = document.createElement('tbody');
+                    column1Items.forEach(item => {
+                        const row = document.createElement('tr');
+                        const nameCell = document.createElement('td');
+                        nameCell.textContent = item.name;
+                        nameCell.style.fontWeight = 'bold';
+                        nameCell.style.color = 'black';
+                        nameCell.style.fontSize = '14px';
+                        row.appendChild(nameCell);
+
+                        const qtyCell = document.createElement('td');
+                        qtyCell.textContent = formatNumber(parseFloat(item.quantity || item.qty));
+                        qtyCell.style.textAlign = 'center';
+                        qtyCell.style.fontWeight = 'bold';
+                        qtyCell.style.color = 'black';
+                        qtyCell.style.fontSize = '14px';
+                        row.appendChild(qtyCell);
+
+                        const rateCell = document.createElement('td');
+                        rateCell.textContent = formatNumber(parseFloat(item.rate));
+                        rateCell.style.textAlign = 'center';
+                        rateCell.style.fontWeight = 'bold';
+                        rateCell.style.color = 'black';
+                        rateCell.style.fontSize = '14px';
+                        row.appendChild(rateCell);
+
+                        const totalCell = document.createElement('td');
+                        totalCell.textContent = formatNumber(parseFloat(item.total));
+                        totalCell.style.textAlign = 'right';
+                        totalCell.style.fontWeight = 'bold';
+                        totalCell.style.color = 'black';
+                        totalCell.style.fontSize = '14px';
+                        row.appendChild(totalCell);
+
+                        tbody1.appendChild(row);
+                    });
+
+                    table1.appendChild(tbody1);
+                    columnDiv1.appendChild(table1);
+                    printContainer.appendChild(columnDiv1);
+
+                    // Column 2
+                    if (column2Items.length > 0) {
+                        const columnDiv2 = document.createElement('div');
+                        columnDiv2.className = 'print-column';
+                        const table2 = document.createElement('table');
+                        table2.className = 'print-items-table';
+
+                        const tbody2 = document.createElement('tbody');
+                        column2Items.forEach(item => {
+                            const row = document.createElement('tr');
+                            const nameCell = document.createElement('td');
+                            nameCell.textContent = item.name;
+                            nameCell.style.fontWeight = 'bold';
+                            nameCell.style.color = 'black';
+                            nameCell.style.fontSize = '14px';
+                            row.appendChild(nameCell);
+
+                            const qtyCell = document.createElement('td');
+                            qtyCell.textContent = formatNumber(parseFloat(item.quantity || item.qty));
+                            qtyCell.style.textAlign = 'center';
+                            qtyCell.style.fontWeight = 'bold';
+                            qtyCell.style.color = 'black';
+                            qtyCell.style.fontSize = '14px';
+                            row.appendChild(qtyCell);
+
+                            const rateCell = document.createElement('td');
+                            rateCell.textContent = formatNumber(parseFloat(item.rate));
+                            rateCell.style.textAlign = 'center';
+                            rateCell.style.fontWeight = 'bold';
+                            rateCell.style.color = 'black';
+                            rateCell.style.fontSize = '14px';
+                            row.appendChild(rateCell);
+
+                            const totalCell = document.createElement('td');
+                            totalCell.textContent = formatNumber(parseFloat(item.total));
+                            totalCell.style.textAlign = 'right';
+                            totalCell.style.fontWeight = 'bold';
+                            totalCell.style.color = 'black';
+                            totalCell.style.fontSize = '14px';
+                            row.appendChild(totalCell);
+
+                            tbody2.appendChild(row);
+                        });
+
+                        table2.appendChild(tbody2);
+
+                        // Add grand total to last column of last page
+                        if (page === totalPages - 1) {
+                            const tfoot = document.createElement('tfoot');
+                            const totalRow = document.createElement('tr');
+
+                            const labelTd = document.createElement('td');
+                            labelTd.colSpan = 3;
+                            labelTd.textContent = `Grand Total (${items.length} items)`;
+                            labelTd.style.fontWeight = 'bold';
+                            labelTd.style.textAlign = 'right';
+                            labelTd.style.color = 'black';
+                            labelTd.style.fontSize = '15px';
+                            totalRow.appendChild(labelTd);
+
+                            const amountTd = document.createElement('td');
+                            amountTd.textContent = formatNumber(grandTotal);
+                            amountTd.style.fontWeight = 'bold';
+                            amountTd.style.textAlign = 'right';
+                            amountTd.style.color = 'black';
+                            amountTd.style.fontSize = '15px';
+                            totalRow.appendChild(amountTd);
+
+                            tfoot.appendChild(totalRow);
+                            table2.appendChild(tfoot);
+                        }
+
+                        columnDiv2.appendChild(table2);
+                        printContainer.appendChild(columnDiv2);
+                    } else if (page === totalPages - 1) {
+                        // If only one column on last page, add total there
+                        const tfoot = document.createElement('tfoot');
+                        const totalRow = document.createElement('tr');
+
+                        const labelTd = document.createElement('td');
+                        labelTd.colSpan = 3;
+                        labelTd.textContent = `Grand Total (${items.length} items)`;
+                        labelTd.style.fontWeight = 'bold';
+                        labelTd.style.textAlign = 'right';
+                        labelTd.style.color = 'black';
+                        labelTd.style.fontSize = '15px';
+                        totalRow.appendChild(labelTd);
+
+                        const amountTd = document.createElement('td');
+                        amountTd.textContent = formatNumber(grandTotal);
+                        amountTd.style.fontWeight = 'bold';
+                        amountTd.style.textAlign = 'right';
+                        amountTd.style.color = 'black';
+                        amountTd.style.fontSize = '15px';
+                        totalRow.appendChild(amountTd);
+
+                        tfoot.appendChild(totalRow);
+                        table1.appendChild(tfoot);
+                    }
+                }
+
+                // Trigger print dialog (skip the beforeprint auto-save)
+                window.__skipAutoSave = true;  // Flag to skip auto-save
+                setTimeout(() => {
+                    window.print();
+                    // Reset flag after print
+                    setTimeout(() => {
+                        window.__skipAutoSave = false;
+                    }, 1000);
+                }, 200);
+
+            } catch (error) {
+                console.error('Error printing bill:', error);
+                alert('Error loading bill for print');
+            }
+        };
+        
+        // View bill detail in modal
+        window.viewBillDetail = async function(billId) {
+            try {
+                const bill = await billStorageService.getBillById(billId);
+                if (!bill) {
+                    alert('Bill not found');
+                    return;
+                }
+
+                const savedDate = bill.savedAt ? new Date(bill.savedAt.seconds * 1000) : new Date();
+                const dateStr = formatDateToDDMMYYYY(savedDate);
+                const timeStr = savedDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+                let html = `
+                    <div class="bill-detail-view">
+                        <div class="bill-detail-header">
+                            <h2>Bill Details</h2>
+                            <div class="bill-detail-actions">
+                                <button onclick="closeBillDetail()" class="btn-secondary">Close</button>
+                            </div>
+                        </div>
+                        <div class="bill-detail-info">
+                            <div class="info-row">
+                                <span class="info-label">Customer:</span>
+                                <span class="info-value">${bill.customerName}</span>
+                            </div>
+                            ${bill.city ? `
+                            <div class="info-row">
+                                <span class="info-label">City:</span>
+                                <span class="info-value">${bill.city}</span>
+                            </div>
+                            ` : ''}
+                            ${bill.mobile ? `
+                            <div class="info-row">
+                                <span class="info-label">Mobile:</span>
+                                <span class="info-value">${bill.mobile}</span>
+                            </div>
+                            ` : ''}
+                            <div class="info-row">
+                                <span class="info-label">Date & Time:</span>
+                                <span class="info-value">${dateStr} ${timeStr}</span>
+                            </div>
+                        </div>
+                        <div class="bill-items-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Item</th>
+                                        <th>Qty</th>
+                                        <th>Rate</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                `;
+
+                bill.items.forEach(item => {
+                    html += `
+                        <tr>
+                            <td>${item.name}${item.variant ? ` (${item.variant})` : ''}</td>
+                            <td>${formatNumber(item.quantity)}</td>
+                            <td>₹${formatNumber(item.rate)}</td>
+                            <td>₹${formatNumber(item.total)}</td>
+                        </tr>
+                    `;
+                });
+
+                html += `
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="3"><strong>Grand Total (${bill.itemCount} items)</strong></td>
+                                        <td><strong>₹${formatNumber(bill.grandTotal)}</strong></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                `;
+
+                const modal = document.getElementById('bill-detail-modal');
+                modal.innerHTML = html;
+                modal.style.display = 'flex';
+            } catch (error) {
+                console.error('Error viewing bill:', error);
+                alert('Error loading bill details');
+            }
+        };
+
+        // Close bill detail modal
+        window.closeBillDetail = function() {
+            const modal = document.getElementById('bill-detail-modal');
+            modal.style.display = 'none';
+        };
+
+        // Delete bill with confirmation
+        window.deleteBillConfirm = async function(billId) {
+            if (!confirm('Are you sure you want to delete this bill? This action cannot be undone.')) {
+                return;
+            }
+            
+            try {
+                await billStorageService.deleteBill(billId);
+                await loadBillsList(); // Reload the list
+            } catch (error) {
+                console.error('Error deleting bill:', error);
+                alert('Error deleting bill');
+            }
+        };
+
+        // Load bills list
+        async function loadBillsList() {
+            try {
+                const billsList = document.getElementById('bills-list');
+                billsList.innerHTML = '<p style="text-align: center; color: #666; padding: 2rem;">Loading bills...</p>';
+
+                const bills = await billStorageService.getAllBills();
+                
+                if (bills.length === 0) {
+                    billsList.innerHTML = '<p style="text-align: center; color: #666; padding: 2rem;">No bills saved yet.</p>';
+                    return;
+                }
+
+                let html = '<div class="bills-grid">';
+                bills.forEach(bill => {
+                    const savedDate = bill.savedAt ? new Date(bill.savedAt.seconds * 1000) : new Date();
+                    const dateStr = formatDateToDDMMYYYY(savedDate);
+                    const timeStr = savedDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                    
+                    html += `
+                        <div class="bill-card">
+                            <button class="bill-delete-btn" onclick="window.deleteBillConfirm('${bill.id}'); event.stopPropagation();" title="Delete Bill">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            <div class="bill-card-content" onclick="window.loadSavedBillForEditing('${bill.id}')">
+                                <div class="bill-card-header">
+                                    <span class="bill-amount">₹ ${formatNumber(bill.grandTotal)}</span>
+                                </div>
+                                <div class="bill-card-body">
+                                    <p><i class="fas fa-user"></i> ${bill.customerName}</p>
+                                    ${bill.city ? `<p><i class="fas fa-map-marker-alt"></i> ${bill.city}</p>` : ''}
+                                    ${bill.mobile ? `<p><i class="fas fa-phone"></i> ${bill.mobile}</p>` : ''}
+                                    <p><i class="fas fa-calendar"></i> ${dateStr} ${timeStr}</p>
+                                    <p><i class="fas fa-box"></i> ${bill.itemCount} items</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                
+                billsList.innerHTML = html;
+            } catch (error) {
+                console.error('Error loading bills:', error);
+                billsList.innerHTML = '<p style="text-align: center; color: #d32f2f; padding: 2rem;">Error loading bills. Please try again.</p>';
+            }
+        }
+
+        // Refresh bills list (wrapper for button)
+        window.refreshBillsList = async function() {
+            await loadBillsList();
+        };
+
+        // ===== END BILL MANAGEMENT FUNCTIONS =====
+        
+        const MAX_PRINT_ROWS_PER_COLUMN = 36;
+
+        function updatePrintHeader() {
+            const customerName = document.getElementById('customer-name').value.trim();
+            const cityName = document.getElementById('city-name').value.trim();
+            const printCustomerInfo = document.getElementById('print-customer-info');
+
+            if (customerName && cityName) {
+                printCustomerInfo.textContent = `${customerName}, ${cityName}`;
+            } else if (customerName) {
+                printCustomerInfo.textContent = customerName;
+            } else if (cityName) {
+                printCustomerInfo.textContent = cityName;
+            } else {
+                printCustomerInfo.textContent = '';
+            }
+
+            const mobileNumber = document.getElementById('cashier-name').value.trim();
+            const dateTime = document.getElementById('bill-datetime').textContent.trim();
+            const printDatetimeInfo = document.getElementById('print-datetime-info');
+
+            if (mobileNumber && dateTime) {
+                printDatetimeInfo.textContent = `${mobileNumber}, ${dateTime}`;
+            } else if (mobileNumber) {
+                printDatetimeInfo.textContent = mobileNumber;
+            } else if (dateTime) {
+                printDatetimeInfo.textContent = dateTime;
+            } else {
+                printDatetimeInfo.textContent = '';
+            }
+        }
+
+        function getPrintableItemName(row) {
+            const variantSelect = row.querySelector('.variant-select-inline');
+            if (variantSelect) {
+                const selectedOption = variantSelect.options[variantSelect.selectedIndex];
+                if (selectedOption) {
+                    return selectedOption.text.trim();
+                }
+            }
+
+            const nameSpan = row.querySelector('.item-name');
+            if (nameSpan) {
+                return nameSpan.textContent.trim();
+            }
+
+            return '';
+        }
+
+        function formatNumber(value) {
+            const num = parseFloat(value);
+            if (Number.isNaN(num)) {
+                return '0';
+            }
+            // Remove unnecessary decimal (.0)
+            return num % 1 === 0 ? num.toString() : num.toFixed(1);
+        }
+
+        function formatDateToDDMMYYYY(date) {
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+
+        function toDevanagari(number) {
+            const devanagariMap = {
+                '0': '०',
+                '1': '१',
+                '2': '२',
+                '3': '३',
+                '4': '४',
+                '5': '५',
+                '6': '६',
+                '7': '७',
+                '8': '८',
+                '9': '९'
+            };
+            
+            return String(number).split('').map(char => devanagariMap[char] || char).join('');
+        }
+
+        function formatNumberForPrint(value) {
+            const formatted = formatNumber(value);
+            const isDevanagariMode = document.getElementById('devanagari-toggle').classList.contains('active');
+            return isDevanagariMode ? toDevanagari(formatted) : formatted;
+        }
+
+        function collectPrintableItems() {
+            const rows = Array.from(document.querySelectorAll('.item-row.has-quantity'));
+            return rows.map(row => {
+                const qtyInput = row.querySelector('.qty-input');
+                const rateInput = row.querySelector('.rate-input');
+                const totalCell = row.querySelector('.total-cell');
+
+                const quantity = qtyInput ? qtyInput.value.trim() || '0' : '0';
+                const rate = rateInput ? rateInput.value.trim() || '0' : '0';
+                const total = totalCell ? totalCell.textContent.trim() || '0' : '0';
+                
+                // Check if this row has rate-edited class (rate was manually changed)
+                const isRateChanged = row.classList.contains('rate-edited');
+
+                return {
+                    name: getPrintableItemName(row),
+                    quantity: quantity,
+                    qty: quantity, // Keep both for compatibility
+                    rate: rate,
+                    total: total,
+                    rateChanged: isRateChanged
+                };
+            }).filter(item => item.name);
+        }
+
+        function buildPrintItemsLayout() {
+            const container = document.getElementById('print-items-container');
+            if (!container) return;
+
+            container.innerHTML = '';
+            container.classList.remove('columns-1', 'columns-2', 'columns-3');
+            container.classList.add('columns-2');
+
+            const items = collectPrintableItems();
+            if (!items.length) {
+                return;
+            }
+
+            // Calculate grand total
+            let grandTotal = 0;
+            items.forEach(item => {
+                const total = parseFloat(item.total) || 0;
+                grandTotal += total;
+            });
+
+            const ITEMS_PER_PAGE = MAX_PRINT_ROWS_PER_COLUMN * 2; // 84 items per page (42 x 2 columns)
+            const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE);
+
+            for (let page = 0; page < totalPages; page++) {
+                const pageStartIndex = page * ITEMS_PER_PAGE;
+                const pageEndIndex = Math.min(pageStartIndex + ITEMS_PER_PAGE, items.length);
+                const pageItems = items.slice(pageStartIndex, pageEndIndex);
+
+                // Always use 2 columns per page
+                const columnsNeeded = 2;
+
+                for (let col = 0; col < columnsNeeded; col++) {
+                    const startIndex = col * MAX_PRINT_ROWS_PER_COLUMN;
+                    const slice = pageItems.slice(startIndex, startIndex + MAX_PRINT_ROWS_PER_COLUMN);
+
+                    // Skip creating column if no items
+                    if (slice.length === 0) {
+                        continue;
+                    }
+
+                    const columnDiv = document.createElement('div');
+                    columnDiv.className = 'print-column';
+                    
+                    // Add page break before first column of subsequent pages
+                    if (page > 0 && col === 0) {
+                        columnDiv.style.pageBreakBefore = 'always';
+                    }
+
+                    const table = document.createElement('table');
+                    table.className = 'print-items-table';
+
+                    const thead = document.createElement('thead');
+                    const headerRow = document.createElement('tr');
+                    ['Item', 'Qty', 'Rate', 'Total'].forEach(label => {
+                        const th = document.createElement('th');
+                        th.textContent = label;
+                        headerRow.appendChild(th);
+                    });
+                    thead.appendChild(headerRow);
+                    table.appendChild(thead);
+
+                    const tbody = document.createElement('tbody');
+                    
+                    // Add item rows
+                    slice.forEach(item => {
+                        const tr = document.createElement('tr');
+                        
+                        // Add class if rate was changed
+                        if (item.rateChanged) {
+                            tr.classList.add('rate-changed-row');
+                        }
+
+                        const nameTd = document.createElement('td');
+                        nameTd.textContent = item.name;
+                        tr.appendChild(nameTd);
+
+                        const qtyTd = document.createElement('td');
+                        qtyTd.textContent = formatNumberForPrint(item.qty);
+                        tr.appendChild(qtyTd);
+
+                        const rateTd = document.createElement('td');
+                        rateTd.textContent = formatNumberForPrint(item.rate);
+                        // Add class to rate cell if changed
+                        if (item.rateChanged) {
+                            rateTd.classList.add('rate-changed-cell');
+                        }
+                        tr.appendChild(rateTd);
+
+                        const totalTd = document.createElement('td');
+                        totalTd.textContent = formatNumberForPrint(item.total);
+                        tr.appendChild(totalTd);
+
+                        tbody.appendChild(tr);
+                    });
+
+                    table.appendChild(tbody);
+
+                    // Add Grand Total footer only to the last column on the last page
+                    const isLastPage = (page === totalPages - 1);
+                    const nextColumnStartIndex = (col + 1) * MAX_PRINT_ROWS_PER_COLUMN;
+                    const hasItemsInNextColumn = nextColumnStartIndex < pageItems.length;
+                    const isLastColumnWithItems = slice.length > 0 && !hasItemsInNextColumn;
+                    
+                    if (isLastPage && isLastColumnWithItems && items.length > 0) {
+                        const tfoot = document.createElement('tfoot');
+                        const totalRow = document.createElement('tr');
+                        
+                        const labelTd = document.createElement('td');
+                        labelTd.setAttribute('colspan', '3');
+                        labelTd.innerHTML = `<span class="item-count-label">[ ${items.length} ]</span>   TOTAL :`;
+                        labelTd.style.textAlign = 'right';
+                        totalRow.appendChild(labelTd);
+
+                        const amountTd = document.createElement('td');
+                        amountTd.textContent = '' + formatNumberForPrint(grandTotal);
+                        amountTd.style.textAlign = 'right';
+                        totalRow.appendChild(amountTd);
+
+                        tfoot.appendChild(totalRow);
+                        table.appendChild(tfoot);
+                    }
+
+                    columnDiv.appendChild(table);
+                    container.appendChild(columnDiv);
+                }
+            }
+        }
+
+        function clearPrintItemsLayout() {
+            const container = document.getElementById('print-items-container');
+            if (!container) return;
+
+            container.innerHTML = '';
+            container.classList.remove('columns-1', 'columns-2', 'columns-3');
+        }
+
+        window.addEventListener('beforeprint', () => {
+            // Skip if we're printing a saved bill
+            if (window.__skipAutoSave) {
+                return;
+            }
+            
+            updatePrintHeader();
+            buildPrintItemsLayout();
+            
+            // Auto-save bill to Firestore
+            saveBillToFirestore();
+        });
+
+        window.addEventListener('afterprint', () => {
+            clearPrintItemsLayout();
+        });
+
+        // Auto-save bill function
+        async function saveBillToFirestore() {
+            try {
+                const items = collectPrintableItems();
+                if (!items || items.length === 0) {
+                    return; // Don't save empty bills
+                }
+
+                // Calculate total
+                let grandTotal = 0;
+                items.forEach(item => {
+                    const total = parseFloat(item.total) || 0;
+                    grandTotal += total;
+                });
+
+                const billData = {
+                    billNo: document.getElementById('bill-no').textContent,
+                    customerName: document.getElementById('customer-name').value.trim() || 'Walk-in',
+                    city: document.getElementById('city-name').value.trim() || '',
+                    mobile: document.getElementById('cashier-name').value.trim() || '',
+                    dateTime: document.getElementById('bill-datetime').textContent,
+                    items: items,
+                    grandTotal: grandTotal,
+                    itemCount: items.length
+                };
+
+                await billStorageService.saveBill(billData);
+                console.log('Bill auto-saved to Firestore');
+            } catch (error) {
+                console.error('Error auto-saving bill:', error);
+            }
+        }
+
+        // Devanagari toggle functionality
+        const devanagariToggle = document.getElementById('devanagari-toggle');
+        devanagariToggle.addEventListener('click', function() {
+            this.classList.toggle('active');
+        });
+
+        // Search bills functionality
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if we need to load a saved bill (from new tab)
+            const loadBillId = sessionStorage.getItem('loadBillId');
+            if (loadBillId) {
+                sessionStorage.removeItem('loadBillId');
+                loadBillIntoNewBill(loadBillId);
+            }
+            
+            const billsSearch = document.getElementById('bills-search');
+            if (billsSearch) {
+                billsSearch.addEventListener('input', async (e) => {
+                    const searchTerm = e.target.value.trim();
+                    
+                    if (searchTerm.length === 0) {
+                        await loadBillsList();
+                        return;
+                    }
+
+                    const bills = await billStorageService.searchBills(searchTerm);
+                    const billsList = document.getElementById('bills-list');
+                    
+                    if (bills.length === 0) {
+                        billsList.innerHTML = '<p style="text-align: center; color: #666; padding: 2rem;">No matching bills found.</p>';
+                        return;
+                    }
+
+                    let html = '<div class="bills-grid">';
+                    bills.forEach(bill => {
+                        const savedDate = bill.savedAt ? new Date(bill.savedAt.seconds * 1000) : new Date();
+                        const dateStr = formatDateToDDMMYYYY(savedDate);
+                        const timeStr = savedDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                        
+                        html += `
+                            <div class="bill-card">
+                                <button class="bill-delete-btn" onclick="window.deleteBillConfirm('${bill.id}'); event.stopPropagation();" title="Delete Bill">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                                <div class="bill-card-content" onclick="window.loadSavedBillForEditing('${bill.id}')">
+                                    <div class="bill-card-header">
+                                        <span class="bill-amount">₹ ${formatNumber(bill.grandTotal)}</span>
+                                    </div>
+                                    <div class="bill-card-body">
+                                        <p><i class="fas fa-user"></i> ${bill.customerName}</p>
+                                        ${bill.city ? `<p><i class="fas fa-map-marker-alt"></i> ${bill.city}</p>` : ''}
+                                        ${bill.mobile ? `<p><i class="fas fa-phone"></i> ${bill.mobile}</p>` : ''}
+                                        <p><i class="fas fa-calendar"></i> ${dateStr} ${timeStr}</p>
+                                        <p><i class="fas fa-box"></i> ${bill.itemCount} items</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    html += '</div>';
+                    
+                    billsList.innerHTML = html;
+                });
+            }
+
+            // Load bills when admin page is shown
+            const adminAccessBtn = document.getElementById('admin-access-btn');
+            if (adminAccessBtn) {
+                adminAccessBtn.addEventListener('click', () => {
+                    setTimeout(() => {
+                        const adminPage = document.getElementById('admin-page');
+                        if (adminPage && adminPage.classList.contains('active')) {
+                            loadBillsList();
+                        }
+                    }, 100);
+                });
+            }
+        });
+    </script>
 </body>
 </html>
 

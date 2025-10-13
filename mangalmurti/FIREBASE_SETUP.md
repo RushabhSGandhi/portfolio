@@ -60,6 +60,11 @@ service cloud.firestore {
                      resource.data.keys().hasAny(['name', 'rate']);
     }
     
+    // Bills collection - authenticated users only
+    match /stores/mangalmurti-traders/bills/{billId} {
+      allow read, write: if request.auth != null;
+    }
+    
     // Deny all other access
     match /{document=**} {
       allow read, write: if false;

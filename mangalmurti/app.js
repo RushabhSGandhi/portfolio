@@ -334,8 +334,8 @@ class App {
     }
 
     showPage(pageId) {
-        // Check admin access for admin pages
-        if (pageId.startsWith('admin-') && !this.isAdminAuthenticated) {
+        // Check admin access for admin pages and past bills
+        if ((pageId.startsWith('admin-') || pageId === 'past-bills') && !this.isAdminAuthenticated) {
             this.requestAdminAccess();
             return;
         }
@@ -350,6 +350,11 @@ class App {
         if (targetPage) {
             targetPage.classList.add('active');
             targetPage.classList.add('fade-in');
+            
+            // Load bills when showing past bills page
+            if (pageId === 'past-bills') {
+                loadBillsList();
+            }
         }
         
         // Update navigation
