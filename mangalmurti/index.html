@@ -545,7 +545,7 @@
                         row.appendChild(nameCell);
 
                         const qtyCell = document.createElement('td');
-                        qtyCell.textContent = formatNumber(parseFloat(item.quantity || item.qty));
+                        qtyCell.textContent = formatQuantity(item.quantity || item.qty);
                         qtyCell.style.textAlign = 'center';
                         qtyCell.style.fontWeight = 'bold';
                         qtyCell.style.color = 'black';
@@ -593,7 +593,7 @@
                             row.appendChild(nameCell);
 
                             const qtyCell = document.createElement('td');
-                            qtyCell.textContent = formatNumber(parseFloat(item.quantity || item.qty));
+                            qtyCell.textContent = formatQuantity(item.quantity || item.qty);
                             qtyCell.style.textAlign = 'center';
                             qtyCell.style.fontWeight = 'bold';
                             qtyCell.style.color = 'black';
@@ -915,6 +915,15 @@
             return num % 1 === 0 ? num.toString() : num.toFixed(1);
         }
 
+        function formatQuantity(value) {
+            const num = parseFloat(value);
+            if (Number.isNaN(num)) {
+                return '0';
+            }
+            // Display quantity as-is without rounding
+            return num.toString();
+        }
+
         function formatDateToDDMMYYYY(date) {
             const day = String(date.getDate()).padStart(2, '0');
             const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -1047,7 +1056,9 @@
                         tr.appendChild(nameTd);
 
                         const qtyTd = document.createElement('td');
-                        qtyTd.textContent = formatNumberForPrint(item.qty);
+                        const isDevanagariMode = document.getElementById('devanagari-toggle').classList.contains('active');
+                        const qtyFormatted = formatQuantity(item.qty);
+                        qtyTd.textContent = isDevanagariMode ? toDevanagari(qtyFormatted) : qtyFormatted;
                         tr.appendChild(qtyTd);
 
                         const rateTd = document.createElement('td');

@@ -736,14 +736,50 @@ function renderEditVariantsList() {
     }
     
     variantsList.innerHTML = catalogManager.editVariants.map((variant, index) => `
-        <div style="display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem; background: white; border-radius: 3px; margin-bottom: 0.3rem;">
-            <span style="flex: 1; font-size: 0.9rem;">${variant.name}</span>
-            <span style="font-weight: 600; color: #28a745; min-width: 80px; text-align: right;">${variant.rate.toFixed(1)}</span>
-            <button type="button" onclick="removeEditVariant(${index})" class="btn btn-sm" style="padding: 0.2rem 0.5rem; background: #dc3545; color: white;">
+        <div style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; background: white; border-radius: 3px; margin-bottom: 0.5rem; border: 1px solid #e0e0e0;">
+            <div style="flex: 2; min-width: 0;">
+                <label style="display: block; font-size: 0.75rem; color: #666; margin-bottom: 0.2rem;">Variant Name</label>
+                <input type="text" value="${variant.name}" 
+                       onchange="updateEditVariantName(${index}, this.value)"
+                       style="width: 100%; font-size: 0.9rem; padding: 0.4rem 0.5rem; border: 1px solid #ddd; border-radius: 3px; box-sizing: border-box;"
+                       placeholder="Variant name">
+            </div>
+            <div style="min-width: 90px; max-width: 90px;">
+                <label style="display: block; font-size: 0.75rem; color: #666; margin-bottom: 0.2rem;">Rate</label>
+                <input type="number" value="${variant.rate}" step="0.1" min="0"
+                       onchange="updateEditVariantRate(${index}, this.value)"
+                       style="width: 100%; font-weight: 600; color: #28a745; padding: 0.4rem 0.5rem; border: 1px solid #ddd; border-radius: 3px; box-sizing: border-box;"
+                       placeholder="Rate">
+            </div>
+            <button type="button" onclick="removeEditVariant(${index})" class="btn btn-sm" 
+                    style="padding: 0.5rem 0.6rem; background: #dc3545; color: white; border: none; border-radius: 3px; cursor: pointer; margin-top: 1.2rem;"
+                    title="Remove variant">
                 <i class="fas fa-times"></i>
             </button>
         </div>
     `).join('');
+}
+
+// Update variant name during edit
+function updateEditVariantName(index, newName) {
+    const name = newName.trim();
+    if (!name) {
+        app.showToast('Variant name cannot be empty', 'error');
+        renderEditVariantsList(); // Re-render to reset the input
+        return;
+    }
+    catalogManager.editVariants[index].name = name;
+}
+
+// Update variant rate during edit
+function updateEditVariantRate(index, newRate) {
+    const rate = parseFloat(newRate);
+    if (isNaN(rate) || rate <= 0) {
+        app.showToast('Please enter a valid rate greater than 0', 'error');
+        renderEditVariantsList(); // Re-render to reset the input
+        return;
+    }
+    catalogManager.editVariants[index].rate = rate;
 }
 
 // Initialize catalog manager
@@ -759,6 +795,11 @@ window.addVariant = addVariant;
 window.removeVariant = removeVariant;
 window.renderVariantsList = renderVariantsList;
 window.toggleEditVariantsSection = toggleEditVariantsSection;
+window.addEditVariant = addEditVariant;
+window.removeEditVariant = removeEditVariant;
+window.renderEditVariantsList = renderEditVariantsList;
+window.updateEditVariantName = updateEditVariantName;
+window.updateEditVariantRate = updateEditVariantRate;
 window.addEditVariant = addEditVariant;
 window.removeEditVariant = removeEditVariant;
 window.renderEditVariantsList = renderEditVariantsList;
