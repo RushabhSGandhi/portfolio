@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -916,11 +916,26 @@
         }
 
         function formatQuantity(value) {
-            const num = parseFloat(value);
+            // If value is null/undefined/empty, return '0'
+            if (value === null || value === undefined) return '0';
+            const s = String(value).trim();
+            if (s === '') return '0';
+
+            // Normalize leading plus sign but keep minus if present
+            const normalized = s.replace(/^\+/, '');
+
+            // If the user entered a plain numeric string (integers or decimals),
+            // return it as-is so trailing zeros are preserved (e.g. '0.250').
+            // Also accept inputs like '.25' (leave as entered).
+            if (/^[+-]?\d+(\.\d+)?$/.test(normalized) || /^\.\d+$/.test(normalized)) {
+                return normalized;
+            }
+
+            // Otherwise, try parsing and return a sensible fallback
+            const num = parseFloat(s);
             if (Number.isNaN(num)) {
                 return '0';
             }
-            // Display quantity as-is without rounding
             return num.toString();
         }
 
@@ -1248,7 +1263,5 @@
     </script>
 </body>
 </html>
-
-
 
 
