@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Audio Transcription</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container-wrapper">
+        <div class="container" id="container">
+            <!-- Zoom Controls -->
+            <div class="zoom-controls">
+                <button id="zoomInBtn" class="btn-zoom" title="Zoom In">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <button id="zoomOutBtn" class="btn-zoom" title="Zoom Out">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="chat-window" id="chatWindow">
+                <button id="clearChatBtn" class="btn-clear-chat" title="Clear chat">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 6H5H21M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Warning Popup -->
+            <div id="clearChatPopup" class="popup-overlay">
+                <div class="popup-content">
+                    <h3>Clear Chat?</h3>
+                    <p>Are you sure you want to clear all messages? This action cannot be undone.</p>
+                    <div class="popup-buttons">
+                        <button id="cancelClearBtn" class="btn-popup btn-cancel">Cancel</button>
+                        <button id="confirmClearBtn" class="btn-popup btn-confirm">Clear</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="current-text">
+                <div class="text-input-container">
+                    <textarea id="currentText" class="text-display" placeholder="Type or speak your message..."></textarea>
+                    <div class="right-side-buttons">
+                        <div class="left-buttons">
+                            <button id="clearBtn" class="btn-action btn-clear-action" title="Clear current text">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                            <button id="recordToggleBtn" class="btn-action btn-record-toggle" type="button" title="Start/Stop Recording">
+                                <span class="record-icon">🔴</span>
+                            </button>
+                        </div>
+                        <button id="sendBtn" class="btn-action btn-send" title="Send to chat">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M22 2L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
