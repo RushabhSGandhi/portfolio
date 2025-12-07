@@ -94,6 +94,54 @@
             background-color: #218838;
         }
 
+        /* Modal styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 0;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-header {
+            padding: 1.5rem 1.5rem 1rem;
+            border-bottom: 1px solid #e0e0e0;
+            margin: 0;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem 1.5rem;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+        }
+
         .btn-primary {
             background-color: #007bff;
             color: white;
@@ -1020,6 +1068,25 @@
             </div>
         </div>
 
+        <!-- Uchal Entries Section -->
+        <div class="card">
+            <!-- Error message for uchal entries section -->
+            <div id="uchal-error" class="error-message" style="display: none;"></div>
+            <div class="section">
+                <div id="uchal-entries">
+                    <div class="empty-state">
+                        <button class="btn btn-primary" onclick="addUchalEntry()">Uchal</button>
+                    </div>
+                </div>
+                <div class="summary-section" style="display: none;">
+                    <div class="summary-row">
+                        <span class="summary-label">Uchal Total:</span>
+                        <span class="summary-value" id="uchal-total">0.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Final Summary -->
         <div class="card final-summary">
             <div class="summary-section">
@@ -1043,9 +1110,37 @@
                     <span class="summary-label">Cash Total:</span>
                     <span class="summary-value" id="final-cash-total">-0.00</span>
                 </div>
+                <div class="summary-row" id="final-uchal-row" style="display: none;">
+                    <span class="summary-label">Uchal Total:</span>
+                    <span class="summary-value" id="final-uchal-total">-0.00</span>
+                </div>
                 <div class="summary-row remaining-row">
                     <span class="summary-label">Remaining:</span>
                     <span class="summary-value" id="remaining">0.00</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Custom Account Name Modal -->
+        <div id="customAccountModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Enter Custom Account Name</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input
+                            type="text"
+                            id="customAccountInput"
+                            class="form-input"
+                            placeholder="Enter account name"
+                            maxlength="50"
+                        >
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="closeCustomAccountModal()">Cancel</button>
+                    <button class="btn btn-primary" onclick="saveCustomAccount()">OK</button>
                 </div>
             </div>
         </div>
@@ -1063,6 +1158,7 @@
         let expenseEntries = [];
         let cashEntries = [];
         let digitalEntries = [];
+        let uchalEntries = [];
 
         // Multi-select dropdown functionality for DSM
         function initializeMultiSelect() {
@@ -1199,13 +1295,55 @@
             initializeSingleSelect('machine', 'Select Machine');
         }
 
+        // Global variables for custom account modal
+        let currentCustomAccountCallback = null;
+
+        // Modal functions
+        function openCustomAccountModal(callback) {
+            currentCustomAccountCallback = callback;
+            document.getElementById('customAccountInput').value = '';
+            document.getElementById('customAccountModal').style.display = 'flex';
+            document.getElementById('customAccountInput').focus();
+        }
+
+        function closeCustomAccountModal() {
+            document.getElementById('customAccountModal').style.display = 'none';
+            currentCustomAccountCallback = null;
+        }
+
+        function saveCustomAccount() {
+            const input = document.getElementById('customAccountInput');
+            const customName = input.value.trim();
+
+            if (currentCustomAccountCallback) {
+                currentCustomAccountCallback(customName);
+            }
+
+            closeCustomAccountModal();
+        }
+
+        // Handle Enter key in modal input
+        document.getElementById('customAccountInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                saveCustomAccount();
+            }
+        });
+
+        // Handle Escape key to close modal
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && document.getElementById('customAccountModal').style.display === 'flex') {
+                closeCustomAccountModal();
+            }
+        });
+
         // Initialize multi-select on page load
         document.addEventListener('DOMContentLoaded', function() {
             initializeMultiSelect();
             initializeSingleSelects();
             initializeDateDropdown();
-            // Auto-add cash entry since it's always needed
+            // Auto-add cash and digital entries since they're always needed
             addCashEntry();
+            addDigitalEntry();
         });
 
         // Initialize date dropdown
@@ -1274,19 +1412,21 @@
         const mockCreditAccounts = [
             { id: 'c1', name: 'Credit Account 1' },
             { id: 'c2', name: 'Credit Account 2' },
-            { id: 'c3', name: 'Credit Account 3' }
+            { id: 'c3', name: 'Credit Account 3' },
+            { id: 'other', name: 'Other' }
         ];
 
         const mockExpenseAccounts = [
             { id: 'e1', name: 'Expense Account 1' },
             { id: 'e2', name: 'Expense Account 2' },
-            { id: 'e3', name: 'Expense Account 3' }
+            { id: 'e3', name: 'Expense Account 3' },
+            { id: 'other', name: 'Other' }
         ];
 
         const mockDigitalAccounts = [
-            { id: 'd1', name: 'Digital Account 1' },
-            { id: 'd2', name: 'Digital Account 2' },
-            { id: 'd3', name: 'Digital Account 3' }
+            { id: 'd1', name: 'PhonePe' },
+            { id: 'd2', name: 'PhonePe Night' },
+            { id: 'd3', name: 'Swipe' }
         ];
 
         // Handle machine selection
@@ -1379,9 +1519,29 @@
         }
 
         function updateCreditEntry(index, field, value) {
-            creditEntries[index][field] = field === 'amount' ? (value === '' ? '' : parseFloat(value)) : value;
-            updateCreditTotal();
-            updateFinalSummary();
+            if (field === 'accountId' && value === 'other') {
+                openCustomAccountModal(function(customName) {
+                    if (customName) {
+                        creditEntries[index][field] = customName;
+                        creditEntries[index].isCustomAccount = true;
+                        // Re-render to show the custom option in this dropdown
+                        renderCreditEntries();
+                    } else {
+                        // If user cancels or enters empty name, reset to empty
+                        creditEntries[index][field] = '';
+                        creditEntries[index].isCustomAccount = false;
+                    }
+                    updateCreditTotal();
+                    updateFinalSummary();
+                });
+            } else {
+                creditEntries[index][field] = field === 'amount' ? (value === '' ? '' : parseFloat(value)) : value;
+                if (field === 'accountId') {
+                    creditEntries[index].isCustomAccount = false;
+                }
+                updateCreditTotal();
+                updateFinalSummary();
+            }
         }
 
         function updateCreditTotal() {
@@ -1415,6 +1575,7 @@
                                             ${account.name}
                                         </option>
                                     `).join('')}
+                                    ${entry.isCustomAccount ? `<option value="${entry.accountId}" selected>Other: ${entry.accountId}</option>` : ''}
                                 </select>
                             </td>
                             <td>
@@ -1459,9 +1620,29 @@
         }
 
         function updateExpenseEntry(index, field, value) {
-            expenseEntries[index][field] = field === 'amount' ? (value === '' ? '' : parseFloat(value)) : value;
-            updateExpenseTotal();
-            updateFinalSummary();
+            if (field === 'accountId' && value === 'other') {
+                openCustomAccountModal(function(customName) {
+                    if (customName) {
+                        expenseEntries[index][field] = customName;
+                        expenseEntries[index].isCustomAccount = true;
+                        // Re-render to show the custom option in this dropdown
+                        renderExpenseEntries();
+                    } else {
+                        // If user cancels or enters empty name, reset to empty
+                        expenseEntries[index][field] = '';
+                        expenseEntries[index].isCustomAccount = false;
+                    }
+                    updateExpenseTotal();
+                    updateFinalSummary();
+                });
+            } else {
+                expenseEntries[index][field] = field === 'amount' ? (value === '' ? '' : parseFloat(value)) : value;
+                if (field === 'accountId') {
+                    expenseEntries[index].isCustomAccount = false;
+                }
+                updateExpenseTotal();
+                updateFinalSummary();
+            }
         }
 
         function updateExpenseTotal() {
@@ -1495,6 +1676,7 @@
                                             ${account.name}
                                         </option>
                                     `).join('')}
+                                    ${entry.isCustomAccount ? `<option value="${entry.accountId}" selected>Other: ${entry.accountId}</option>` : ''}
                                 </select>
                             </td>
                             <td>
@@ -1605,7 +1787,8 @@
 
         // Digital Payment Entries Functions
         function addDigitalEntry() {
-            const entry = { accountId: '', amount: '' };
+            // Pre-populate with first account for auto-opened entries
+            const entry = { accountId: 'd1', amount: '' };
             digitalEntries.push(entry);
             renderDigitalEntries();
         }
@@ -1640,7 +1823,7 @@
                 `;
                 summarySection.style.display = 'none';
             } else {
-                let html = '<div class="entries-table"><table><thead><tr><th>UPI / Swipe</th><th>Amount</th></tr></thead><tbody>';
+                let html = '<div class="entries-table"><table><thead><tr><th>PhonePe / Swipe</th><th>Amount</th></tr></thead><tbody>';
 
                 digitalEntries.forEach((entry, index) => {
                     html += `
@@ -1683,6 +1866,89 @@
             }
         }
 
+        // Uchal Entries Functions
+        function addUchalEntry() {
+            // Pre-populate with selected DSM only for the first entry
+            const selectedDsms = Array.from(document.querySelectorAll('input[name="dsm"]:checked')).map(cb => cb.value);
+            const defaultDsm = (uchalEntries.length === 0 && selectedDsms.length > 0) ? selectedDsms[0] : '';
+
+            const entry = { accountId: defaultDsm, amount: '' };
+            uchalEntries.push(entry);
+            renderUchalEntries();
+        }
+
+        function removeUchalEntry(index) {
+            uchalEntries.splice(index, 1);
+            renderUchalEntries();
+            updateFinalSummary();
+        }
+
+        function updateUchalEntry(index, field, value) {
+            uchalEntries[index][field] = field === 'amount' ? (value === '' ? '' : parseFloat(value)) : value;
+            updateUchalTotal();
+            updateFinalSummary();
+        }
+
+        function updateUchalTotal() {
+            const total = uchalEntries.reduce((sum, entry) => sum + (parseFloat(entry.amount) || 0), 0);
+            document.getElementById('uchal-total').textContent = total.toFixed(1);
+            return total;
+        }
+
+        function renderUchalEntries() {
+            const container = document.getElementById('uchal-entries');
+            const summarySection = container.parentElement.querySelector('.summary-section');
+
+            if (uchalEntries.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <button class="btn btn-primary" onclick="addUchalEntry()">Uchal</button>
+                    </div>
+                `;
+                summarySection.style.display = 'none';
+            } else {
+                let html = '<div class="entries-table"><table><thead><tr><th>Uchal DSM</th><th>Amount</th></tr></thead><tbody>';
+
+                uchalEntries.forEach((entry, index) => {
+                    html += `
+                        <tr>
+                            <td>
+                                <select class="form-select" onchange="updateUchalEntry(${index}, 'accountId', this.value)">
+                                    <option value="">Select DSM</option>
+                                    <option value="dsm1" ${entry.accountId === 'dsm1' ? 'selected' : ''}>DSM North</option>
+                                    <option value="dsm2" ${entry.accountId === 'dsm2' ? 'selected' : ''}>DSM South</option>
+                                    <option value="dsm3" ${entry.accountId === 'dsm3' ? 'selected' : ''}>DSM East</option>
+                                    <option value="dsm4" ${entry.accountId === 'dsm4' ? 'selected' : ''}>DSM West</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input
+                                    type="number"
+                                    class="form-input"
+                                    value="${entry.amount || ''}"
+                                    onchange="updateUchalEntry(${index}, 'amount', this.value)"
+                                    step="0.1"
+                                    min="0"
+                                    placeholder="0.00"
+                                >
+                            </td>
+                            <td>
+                                <div class="entry-actions">
+                                    <button class="remove-btn" onclick="removeUchalEntry(${index})" title="Remove">×</button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                html += '</tbody></table></div>';
+                html += '<button class="add-more-btn" onclick="addUchalEntry()" title="Add More">+</button>';
+
+                container.innerHTML = html;
+                summarySection.style.display = 'block';
+            }
+        }
+
         // Final Summary Calculation
         function updateFinalSummary() {
             const machineTotal = calculateTotal();
@@ -1690,8 +1956,9 @@
             const expenseTotal = updateExpenseTotal();
             const cashTotal = updateCashTotal();
             const digitalTotal = updateDigitalTotal();
+            const uchalTotal = updateUchalTotal();
 
-            const remaining = machineTotal - creditTotal - expenseTotal - cashTotal - digitalTotal;
+            const remaining = machineTotal - creditTotal - expenseTotal - cashTotal - digitalTotal - uchalTotal;
 
             // Update display
             document.getElementById('final-machine-total').textContent = machineTotal.toFixed(1);
@@ -1730,6 +1997,15 @@
                 cashRow.style.display = 'flex';
             } else {
                 cashRow.style.display = 'none';
+            }
+
+            // Show/hide uchal total row
+            const uchalRow = document.getElementById('final-uchal-row');
+            if (uchalEntries.length > 0) {
+                document.getElementById('final-uchal-total').textContent = uchalTotal.toFixed(1);
+                uchalRow.style.display = 'flex';
+            } else {
+                uchalRow.style.display = 'none';
             }
 
             document.getElementById('remaining').textContent = remaining.toFixed(1);
@@ -1850,6 +2126,18 @@
                 }
             }
 
+            // Validate uchal entries (if any)
+            const uchalErrorDiv = document.getElementById('uchal-error');
+            for (let i = 0; i < uchalEntries.length; i++) {
+                const entry = uchalEntries[i];
+                if (!entry.accountId || entry.amount === '' || entry.amount <= 0) {
+                    uchalErrorDiv.textContent = `Please complete all uchal entries`;
+                    uchalErrorDiv.style.display = 'block';
+                    uchalErrorDiv.scrollIntoView({ behavior: 'smooth' });
+                    return;
+                }
+            }
+
             // Hide all error messages
             document.querySelectorAll('.error-message').forEach(div => {
                 div.style.display = 'none';
@@ -1861,7 +2149,8 @@
             const expenseTotal = updateExpenseTotal();
             const cashTotal = updateCashTotal();
             const digitalTotal = updateDigitalTotal();
-            const remaining = machineTotal - creditTotal - expenseTotal - cashTotal - digitalTotal;
+            const uchalTotal = updateUchalTotal();
+            const remaining = machineTotal - creditTotal - expenseTotal - cashTotal - digitalTotal - uchalTotal;
 
             // Create summary
             const summary = {
@@ -1881,6 +2170,8 @@
                 cashTotal: cashTotal,
                 digitalEntries: digitalEntries,
                 digitalTotal: digitalTotal,
+                uchalEntries: uchalEntries,
+                uchalTotal: uchalTotal,
                 remaining: remaining
             };
 
@@ -1896,6 +2187,7 @@
             message += `Expense Total: ${expenseTotal.toFixed(1)}\n`;
             message += `Cash Total: ${cashTotal.toFixed(1)}\n`;
             message += `PhonePe / Swipe Total: ${digitalTotal.toFixed(1)}\n`;
+            message += `Uchal / Baki: ${uchalTotal.toFixed(1)}\n`;
             message += `Remaining: ${remaining.toFixed(1)}\n`;
 
             alert(message);
