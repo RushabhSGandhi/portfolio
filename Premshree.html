@@ -1507,7 +1507,7 @@
 
         // Credit Entries Functions
         function addCreditEntry() {
-            const entry = { accountId: '', amount: '' };
+            const entry = { accountId: '', amount: '', vehicle: '' };
             creditEntries.push(entry);
             renderCreditEntries();
         }
@@ -1577,6 +1577,16 @@
                                     `).join('')}
                                     ${entry.isCustomAccount ? `<option value="${entry.accountId}" selected>Other: ${entry.accountId}</option>` : ''}
                                 </select>
+                                <div style="margin-top: 0.25rem;">
+                                    <input
+                                        type="text"
+                                        class="form-input"
+                                        value="${entry.vehicle || ''}"
+                                        onchange="updateCreditEntry(${index}, 'vehicle', this.value)"
+                                        placeholder="Vehicle"
+                                        style="font-size: 0.9rem;"
+                                    >
+                                </div>
                             </td>
                             <td>
                                 <input
@@ -1787,8 +1797,9 @@
 
         // Digital Payment Entries Functions
         function addDigitalEntry() {
-            // Pre-populate with first account for auto-opened entries
-            const entry = { accountId: 'd1', amount: '' };
+            // Pre-populate with PhonePe only for the first entry
+            const defaultAccount = digitalEntries.length === 0 ? 'd1' : '';
+            const entry = { accountId: defaultAccount, amount: '' };
             digitalEntries.push(entry);
             renderDigitalEntries();
         }
