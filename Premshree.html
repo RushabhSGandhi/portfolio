@@ -72,22 +72,22 @@
         }
 
         .add-more-btn {
-            width: 32px;
-            height: 32px;
-            padding: 0;
+            padding: 0.5rem 1rem;
             background-color: #28a745;
             color: white;
             border: none;
-            border-radius: 50%;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 18px;
-            font-weight: bold;
-            display: flex;
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            margin: 0.5rem auto;
+            gap: 0.25rem;
+            margin:  0 18rem 0.5rem;
             min-width: auto;
             min-height: auto;
+            transition: background-color 0.2s;
         }
 
         .add-more-btn:hover {
@@ -1438,7 +1438,7 @@
                 });
 
                 html += '</tbody></table></div>';
-                html += '<button class="add-more-btn" onclick="addCreditEntry()" title="Add More">+</button>';
+                html += '<button class="add-more-btn" onclick="addCreditEntry()" title="Add More"><span>+</span> Add</button>';
 
                 container.innerHTML = html;
                 summarySection.style.display = 'block';
@@ -1518,7 +1518,7 @@
                 });
 
                 html += '</tbody></table></div>';
-                html += '<button class="add-more-btn" onclick="addExpenseEntry()" title="Add More">+</button>';
+                html += '<button class="add-more-btn" onclick="addExpenseEntry()" title="Add More"><span>+</span> Add</button>';
 
                 container.innerHTML = html;
                 summarySection.style.display = 'block';
@@ -1596,7 +1596,7 @@
                 });
 
                 html += '</tbody></table></div>';
-                html += '<button class="add-more-btn" onclick="addCashEntry()" title="Add More">+</button>';
+                html += '<button class="add-more-btn" onclick="addCashEntry()" title="Add More"><span>+</span> Add</button>';
 
                 container.innerHTML = html;
                 summarySection.style.display = 'block';
@@ -1640,7 +1640,7 @@
                 `;
                 summarySection.style.display = 'none';
             } else {
-                let html = '<div class="entries-table"><table><thead><tr><th>Phonepe / Swipe</th><th>Amount</th></tr></thead><tbody>';
+                let html = '<div class="entries-table"><table><thead><tr><th>Digital Account</th><th>Amount</th></tr></thead><tbody>';
 
                 digitalEntries.forEach((entry, index) => {
                     html += `
@@ -1676,7 +1676,7 @@
                 });
 
                 html += '</tbody></table></div>';
-                html += '<button class="add-more-btn" onclick="addDigitalEntry()" title="Add More">+</button>';
+                html += '<button class="add-more-btn" onclick="addDigitalEntry()" title="Add More"><span>+</span> Add</button>';
 
                 container.innerHTML = html;
                 summarySection.style.display = 'block';
