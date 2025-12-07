@@ -1,0 +1,1593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fuel Station Reading Form</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+                'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+                sans-serif;
+            background-color: #000000;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                max-width: 768px;
+                padding: 2rem;
+            }
+        }
+
+        /* Button styles */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            min-height: 44px;
+            width: 200px;
+        }
+
+        .submit-btn {
+            font-weight: 800;
+        }
+
+        .remove-btn {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: auto;
+            min-height: auto;
+        }
+
+        .remove-btn:hover {
+            background-color: #c82333;
+        }
+
+        .add-more-btn {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0.5rem auto;
+            min-width: auto;
+            min-height: auto;
+        }
+
+        .add-more-btn:hover {
+            background-color: #218838;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+
+        /* Card styles */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Form styles */
+        .form-group {
+            margin-bottom: 0.75rem;
+        }
+
+        .form-group-tight {
+            margin-bottom: 0.75rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #333;
+            font-size: 0.95rem;
+        }
+
+        .form-label-light {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 400;
+            color: #333;
+            font-size: 0.95rem;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            min-height: 44px;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-input[readonly] {
+            background-color: #f8f9fa;
+            cursor: not-allowed;
+        }
+
+        /* Error message */
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* Form specific styles */
+        .section {
+            margin-bottom: 0.5rem;
+        }
+
+        .section:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 0.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #007bff;
+        }
+
+        /* Multi-select dropdown styles */
+        .multi-select-dropdown {
+            position: relative;
+            width: 100%;
+        }
+
+        .multi-select-trigger {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-size: 1rem;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .multi-select-trigger:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+
+        .multi-select-trigger::after {
+            content: '▼';
+            font-size: 0.8rem;
+            color: #666;
+            transition: transform 0.2s;
+        }
+
+        .multi-select-trigger.open::after {
+            transform: rotate(180deg);
+        }
+
+        .multi-select-options {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+
+        .multi-select-options.open {
+            display: block;
+        }
+
+        .multi-select-option {
+            padding: 0.75rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .multi-select-option:last-child {
+            border-bottom: none;
+        }
+
+        .multi-select-option:hover {
+            background-color: #f8f9fa;
+        }
+
+        .multi-select-option label:hover {
+            color: #007bff;
+        }
+
+        .multi-select-option input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #007bff;
+            margin: 0;
+        }
+
+        .multi-select-option label {
+            cursor: pointer;
+            flex: 1;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        .multi-select-trigger.has-selection {
+            border-color: #007bff;
+            background-color: #f8f9ff;
+        }
+
+        .readings-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.1rem;
+        }
+
+        .nozzle-section {
+            display: flex;
+            flex-direction: column;
+            gap: 0.05rem;
+            padding: 0.3rem;
+            background-color: #fafafa;
+            border-radius: 8px;
+            border: 1.5px solid #000000;
+        }
+
+        .reading-text {
+            font-size: 0.95rem;
+            color: #333;
+            margin-bottom: 0.25rem;
+        }
+
+        .reading-value {
+            font-weight: 700;
+            color: #dc3545;
+        }
+
+        .total-section {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .total-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .total-value {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #007bff;
+        }
+
+        /* Navigation */
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-buttons button {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        /* Entry forms styles */
+        .empty-state {
+            text-align: center;
+            padding: 0.5rem;
+            color: #666;
+        }
+
+        .entries-table {
+            overflow-x: auto;
+            margin-bottom: 1rem;
+        }
+
+        .entries-table table {
+            width: 100%;
+        }
+
+        .entries-table td {
+            padding: 0.5rem;
+        }
+
+        .entries-table .form-select {
+            width: 100%;
+            min-width: 210px;
+        }
+
+        .entries-table .form-input {
+            width: 100%;
+            min-width: 120px;
+        }
+
+        .entry-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .summary-section {
+            margin-bottom: 0.5rem;
+            padding: 0.5rem;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.1rem 0;
+        }
+
+        .summary-label {
+            font-weight: 200;
+            color: #333;
+        }
+
+        .summary-value {
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: #007bff;
+        }
+
+        .card.final-summary {
+            padding: 0.75rem;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .final-summary {
+            background-color: #fff3cd;
+            border-radius: 8px;
+            border: 3px solid #ffc107;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .final-summary .summary-label {
+            font-weight: 650;
+        }
+
+        .final-summary .summary-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #007bff;
+        }
+
+        #remaining {
+            color: #dc3545 !important;
+            font-size: 1.3rem !important;
+            font-weight: 800 !important;
+        }
+
+        .remaining-row {
+            border-top: 1.3px solid #000000;
+            padding-top: 0.4rem;
+            padding-bottom: 0.4rem;
+            margin-top: 0.4rem;
+        }
+
+        .discrepancy {
+            color: #dc3545;
+            font-weight: 700;
+        }
+
+        .summary-section {
+            margin-bottom: 1.5rem;
+            padding: 0.2rem;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.1rem 0.25rem;
+        }
+
+        .summary-label {
+            font-weight: 800;
+            color: #333;
+        }
+
+        .summary-value {
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: #007bff
+        }
+
+        .card.final-summary {
+            padding: 0.75rem;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .final-summary {
+            background-color: #fff3cd;
+            border-radius: 8px;
+            border: 3px solid #ffc107;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .final-summary .summary-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #007bff
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.35em 0.65em;
+            font-size: 0.75em;
+            font-weight: 700;
+            line-height: 1;
+            color: #fff;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 0.375rem;
+        }
+
+        .badge-danger {
+            background-color: #dc3545;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+
+            .total-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .total-value {
+                align-self: flex-end;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+            }
+
+            .nav-buttons button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <!-- Error message for basic info section -->
+            <div id="basic-info-error" class="error-message" style="display: none;"></div>
+            <div class="section">
+                <div class="form-row">
+                    <div class="form-group">
+                        <div class="multi-select-dropdown">
+                            <div class="multi-select-trigger" id="dsm-trigger">
+                                <span id="dsm-selected-text">Select DSM(s)</span>
+                            </div>
+                            <div class="multi-select-options" id="dsm-options">
+                                <div class="multi-select-option">
+                                    <input type="checkbox" id="dsm1" name="dsm" value="dsm1">
+                                    <label for="dsm1">DSM North</label>
+                                </div>
+                                <div class="multi-select-option">
+                                    <input type="checkbox" id="dsm2" name="dsm" value="dsm2">
+                                    <label for="dsm2">DSM South</label>
+                                </div>
+                                <div class="multi-select-option">
+                                    <input type="checkbox" id="dsm3" name="dsm" value="dsm3">
+                                    <label for="dsm3">DSM East</label>
+                                </div>
+                                <div class="multi-select-option">
+                                    <input type="checkbox" id="dsm4" name="dsm" value="dsm4">
+                                    <label for="dsm4">DSM West</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <select class="form-select" id="shift" required>
+                            <option value="">Select Shift</option>
+                            <option value="morning">Morning</option>
+                            <option value="evening">Evening</option>
+                            <option value="night">Night</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <input
+                            type="date"
+                            class="form-input"
+                            id="date"
+                            value=""
+                            min=""
+                            max=""
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <select class="form-select" id="machine" required>
+                            <option value="">Select Machine</option>
+                            <option value="m001">M001 - Machine 1</option>
+                            <option value="m002">M002 - Machine 2</option>
+                            <option value="m003">M003 - Machine 3</option>
+                            <option value="m004">M004 - Machine 4</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Readings Section (always visible) -->
+            <div id="readings-section" class="section">
+                <div class="readings-list">
+                    <!-- Nozzle 1 -->
+                    <div class="nozzle-section">
+                        <div class="reading-text">
+                            Nozzle 1: <span class="reading-value" id="start1">0</span>
+                        </div>
+                        <div class="form-group-tight">
+                            <input
+                                type="number"
+                                class="form-input"
+                                id="end1"
+                                step="0.1"
+                            >
+                        </div>
+                        <div class="reading-text" id="subtotal1" style="display: none;">
+                            Subtotal: <span class="reading-value" id="subtotal1-value">0.00</span>
+                        </div>
+                    </div>
+
+                    <!-- Nozzle 2 -->
+                    <div class="nozzle-section">
+                        <div class="reading-text">
+                            Nozzle 2: <span class="reading-value" id="start2">0</span>
+                        </div>
+                        <div class="form-group-tight">
+                            <input
+                                type="number"
+                                class="form-input"
+                                id="end2"
+
+                                step="0.1"
+                            >
+                        </div>
+                        <div class="reading-text" id="subtotal2" style="display: none;">
+                            Subtotal: <span class="reading-value" id="subtotal2-value">0.00</span>
+                        </div>
+                    </div>
+
+                    <!-- Nozzle 3 -->
+                    <div class="nozzle-section">
+                        <div class="reading-text">
+                            Nozzle 3: <span class="reading-value" id="start3">0</span>
+                        </div>
+                        <div class="form-group-tight">
+                            <input
+                                type="number"
+                                class="form-input"
+                                id="end3"
+                                step="0.1"
+                            >
+                        </div>
+                        <div class="reading-text" id="subtotal3" style="display: none;">
+                            Subtotal: <span class="reading-value" id="subtotal3-value">0.00</span>
+                        </div>
+                    </div>
+
+                    <!-- Nozzle 4 -->
+                    <div class="nozzle-section">
+                        <div class="reading-text">
+                            Nozzle 4: <span class="reading-value" id="start4">0</span>
+                        </div>
+                        <div class="form-group-tight">
+                            <input
+                                type="number"
+                                class="form-input"
+                                id="end4"
+                                step="0.1"
+                            >
+                        </div>
+                        <div class="reading-text" id="subtotal4" style="display: none;">
+                            Subtotal: <span class="reading-value" id="subtotal4-value">0.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="total-section">
+                    <div class="total-row">
+                        <span class="total-label">Readings Total:</span>
+                        <span class="total-value" id="machine-total">0.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Credit Entries Section -->
+        <div class="card">
+            <!-- Error message for credit entries section -->
+            <div id="credit-error" class="error-message" style="display: none;"></div>
+            <div class="section">
+                <div id="credit-entries">
+                    <div class="empty-state">
+                        <button class="btn btn-primary" onclick="addCreditEntry()">Credit</button>
+                    </div>
+                </div>
+                <div class="summary-section" style="display: none;">
+                    <div class="summary-row">
+                        <span class="summary-label">Credit Total:</span>
+                        <span class="summary-value" id="credit-total">0.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Expense Entries Section -->
+        <div class="card">
+            <!-- Error message for expense entries section -->
+            <div id="expense-error" class="error-message" style="display: none;"></div>
+            <div class="section">
+                <div id="expense-entries">
+                    <div class="empty-state">
+                        <button class="btn btn-primary" onclick="addExpenseEntry()">Expense</button>
+                    </div>
+                </div>
+                <div class="summary-section" style="display: none;">
+                    <div class="summary-row">
+                        <span class="summary-label">Expense Total:</span>
+                        <span class="summary-value" id="expense-total">0.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Digital Payment Entries Section -->
+        <div class="card">
+            <!-- Error message for digital entries section -->
+            <div id="digital-error" class="error-message" style="display: none;"></div>
+            <div class="section">
+                <div id="digital-entries">
+                    <div class="empty-state">
+                        <button class="btn btn-primary" onclick="addDigitalEntry()">PhonePe / Swipe</button>
+                    </div>
+                </div>
+                <div class="summary-section" style="display: none;">
+                    <div class="summary-row">
+                        <span class="summary-label">PhonePe / Swipe Total:</span>
+                        <span class="summary-value" id="digital-total">0.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Cash Entries Section -->
+        <div class="card">
+            <!-- Error message for cash entries section -->
+            <div id="cash-error" class="error-message" style="display: none;"></div>
+            <div class="section">
+                <div id="cash-entries">
+                    <div class="empty-state">
+                        
+                        <button class="btn btn-primary" onclick="addCashEntry()">Cash</button>
+                    </div>
+                </div>
+                <div class="summary-section" style="display: none;">
+                    <div class="summary-row">
+                        <span class="summary-label">Cash Total:</span>
+                        <span class="summary-value" id="cash-total">0.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Final Summary -->
+        <div class="card final-summary">
+            <div class="summary-section">
+                <div class="summary-row">
+                    <span class="summary-label">Reading Total:</span>
+                    <span class="summary-value" id="final-machine-total">0.00</span>
+                </div>
+                <div class="summary-row" id="final-credit-row" style="display: none;">
+                    <span class="summary-label">Credit Total:</span>
+                    <span class="summary-value" id="final-credit-total">-0.00</span>
+                </div>
+                <div class="summary-row" id="final-expense-row" style="display: none;">
+                    <span class="summary-label">Expense Total:</span>
+                    <span class="summary-value" id="final-expense-total">-0.00</span>
+                </div>
+		<div class="summary-row" id="final-digital-row" style="display: none;">
+                    <span class="summary-label">PhonePe / Swipe Total:</span>
+                    <span class="summary-value" id="final-digital-total">-0.00</span>
+                </div>
+                <div class="summary-row" id="final-cash-row" style="display: none;">
+                    <span class="summary-label">Cash Total:</span>
+                    <span class="summary-value" id="final-cash-total">-0.00</span>
+                </div>
+                <div class="summary-row remaining-row">
+                    <span class="summary-label">Remaining:</span>
+                    <span class="summary-value" id="remaining">0.00</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <button class="btn btn-primary submit-btn" onclick="submitForm()">
+                Submit
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Global data storage
+        let creditEntries = [];
+        let expenseEntries = [];
+        let cashEntries = [];
+        let digitalEntries = [];
+
+        // Multi-select dropdown functionality for DSM
+        function initializeMultiSelect() {
+            const trigger = document.getElementById('dsm-trigger');
+            const options = document.getElementById('dsm-options');
+            const checkboxes = options.querySelectorAll('input[type="checkbox"]');
+            const labels = options.querySelectorAll('label');
+
+            // Toggle dropdown
+            trigger.addEventListener('click', function(e) {
+                e.stopPropagation();
+                this.classList.toggle('open');
+                options.classList.toggle('open');
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!trigger.contains(e.target) && !options.contains(e.target)) {
+                    trigger.classList.remove('open');
+                    options.classList.remove('open');
+                }
+            });
+
+            // Handle checkbox clicks (multi-select)
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateDSMSelection);
+            });
+
+            // Handle label clicks (single select)
+            labels.forEach(label => {
+                label.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    const checkbox = document.getElementById(this.getAttribute('for'));
+
+                    // Uncheck all other checkboxes
+                    checkboxes.forEach(cb => {
+                        if (cb !== checkbox) {
+                            cb.checked = false;
+                        }
+                    });
+
+                    // Check the clicked checkbox
+                    checkbox.checked = true;
+
+                    // Update display
+                    updateDSMSelection();
+
+                    // Close dropdown
+                    trigger.classList.remove('open');
+                    options.classList.remove('open');
+                });
+            });
+        }
+
+        function updateDSMSelection() {
+            const checkboxes = document.querySelectorAll('input[name="dsm"]:checked');
+            const selectedText = document.getElementById('dsm-selected-text');
+            const trigger = document.getElementById('dsm-trigger');
+
+            const selectedLabels = Array.from(checkboxes).map(cb => {
+                return cb.parentElement.querySelector('label').textContent;
+            });
+
+            if (selectedLabels.length === 0) {
+                selectedText.textContent = 'Select DSM(s)';
+                trigger.classList.remove('has-selection');
+            } else {
+                selectedText.textContent = selectedLabels.join(', ');
+                trigger.classList.add('has-selection');
+            }
+        }
+
+        // Initialize multi-select on page load
+        document.addEventListener('DOMContentLoaded', initializeMultiSelect);
+
+        // Set default date and constraints
+        const today = new Date();
+        const twoDaysAgo = new Date();
+        twoDaysAgo.setDate(today.getDate() - 2);
+
+        const dateInput = document.getElementById('date');
+        dateInput.value = today.toISOString().split('T')[0];
+        dateInput.min = twoDaysAgo.toISOString().split('T')[0];
+        dateInput.max = today.toISOString().split('T')[0];
+
+        // Mock data for demo
+        const mockStartReadings = {
+            'm001': [123456789.50, 23456789.75, 892.20, 456.80],
+            'm002': [78.90, 145.30, 267.45, 89.10],
+            'm003': [312.60, 98.75, 176.40, 345.20],
+            'm004': [67.85, 298.90, 134.25, 278.55]
+        };
+
+        const mockCreditAccounts = [
+            { id: 'c1', name: 'Credit Account 1' },
+            { id: 'c2', name: 'Credit Account 2' },
+            { id: 'c3', name: 'Credit Account 3' }
+        ];
+
+        const mockExpenseAccounts = [
+            { id: 'e1', name: 'Expense Account 1' },
+            { id: 'e2', name: 'Expense Account 2' },
+            { id: 'e3', name: 'Expense Account 3' }
+        ];
+
+        const mockDigitalAccounts = [
+            { id: 'd1', name: 'Digital Account 1' },
+            { id: 'd2', name: 'Digital Account 2' },
+            { id: 'd3', name: 'Digital Account 3' }
+        ];
+
+        // Handle machine selection
+        document.getElementById('machine').addEventListener('change', function() {
+            const machineId = this.value;
+
+            if (machineId && mockStartReadings[machineId]) {
+                const startReadings = mockStartReadings[machineId];
+
+                // Update start reading displays
+                for (let i = 1; i <= 4; i++) {
+                    document.getElementById(`start${i}`).textContent = startReadings[i-1];
+                }
+
+                // Clear any previous end readings
+                for (let i = 1; i <= 4; i++) {
+                    document.getElementById(`end${i}`).value = '';
+                    document.getElementById(`subtotal${i}`).style.display = 'none';
+                }
+                document.getElementById('machine-total').textContent = '0.00';
+                updateFinalSummary();
+            } else {
+                // Clear start readings when no machine selected
+                for (let i = 1; i <= 4; i++) {
+                    document.getElementById(`start${i}`).textContent = '0';
+                    document.getElementById(`end${i}`).value = '';
+                    document.getElementById(`subtotal${i}`).style.display = 'none';
+                }
+                document.getElementById('machine-total').textContent = '0.00';
+                updateFinalSummary();
+            }
+        });
+
+        // Handle end reading changes
+        for (let i = 1; i <= 4; i++) {
+            document.getElementById(`end${i}`).addEventListener('input', function() {
+                calculateSubtotal(i);
+                calculateTotal();
+                updateFinalSummary();
+            });
+        }
+
+        function calculateSubtotal(nozzleIndex) {
+            const startElement = document.getElementById(`start${nozzleIndex}`);
+            const endElement = document.getElementById(`end${nozzleIndex}`);
+            const subtotalElement = document.getElementById(`subtotal${nozzleIndex}`);
+            const subtotalValueElement = document.getElementById(`subtotal${nozzleIndex}-value`);
+
+            const start = parseFloat(startElement.textContent) || 0;
+            const end = parseFloat(endElement.value) || 0;
+
+            if (end > 0) {
+                const subtotal = end - start;
+                subtotalValueElement.textContent = subtotal.toFixed(1);
+                subtotalElement.style.display = 'block';
+            } else {
+                subtotalElement.style.display = 'none';
+            }
+        }
+
+        function calculateTotal() {
+            let total = 0;
+
+            for (let i = 1; i <= 4; i++) {
+                const startElement = document.getElementById(`start${i}`);
+                const endElement = document.getElementById(`end${i}`);
+
+                const start = parseFloat(startElement.textContent) || 0;
+                const end = parseFloat(endElement.value) || 0;
+
+                if (end > 0) {
+                    total += (end - start);
+                }
+            }
+
+            document.getElementById('machine-total').textContent = total.toFixed(1);
+            return total;
+        }
+
+        // Credit Entries Functions
+        function addCreditEntry() {
+            const entry = { accountId: '', amount: '' };
+            creditEntries.push(entry);
+            renderCreditEntries();
+        }
+
+        function removeCreditEntry(index) {
+            creditEntries.splice(index, 1);
+            renderCreditEntries();
+            updateFinalSummary();
+        }
+
+        function updateCreditEntry(index, field, value) {
+            creditEntries[index][field] = field === 'amount' ? (value === '' ? '' : parseFloat(value)) : value;
+            updateCreditTotal();
+            updateFinalSummary();
+        }
+
+        function updateCreditTotal() {
+            const total = creditEntries.reduce((sum, entry) => sum + (parseFloat(entry.amount) || 0), 0);
+            document.getElementById('credit-total').textContent = total.toFixed(1);
+            return total;
+        }
+
+        function renderCreditEntries() {
+            const container = document.getElementById('credit-entries');
+            const summarySection = container.parentElement.querySelector('.summary-section');
+
+            if (creditEntries.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <button class="btn btn-primary" onclick="addCreditEntry()">Credit</button>
+                    </div>
+                `;
+                summarySection.style.display = 'none';
+            } else {
+                let html = '<div class="entries-table"><table><thead><tr><th>Credit Account</th><th>Amount</th></tr></thead><tbody>';
+
+                creditEntries.forEach((entry, index) => {
+                    html += `
+                        <tr>
+                            <td>
+                                <select class="form-select" onchange="updateCreditEntry(${index}, 'accountId', this.value)">
+                                    <option value="">Select Account</option>
+                                    ${mockCreditAccounts.map(account => `
+                                        <option value="${account.id}" ${entry.accountId === account.id ? 'selected' : ''}>
+                                            ${account.name}
+                                        </option>
+                                    `).join('')}
+                                </select>
+                            </td>
+                            <td>
+                                <input
+                                    type="number"
+                                    class="form-input"
+                                    value="${entry.amount || ''}"
+                                    onchange="updateCreditEntry(${index}, 'amount', this.value)"
+                                    step="0.1"
+                                    min="0"
+                                    placeholder="0.00"
+                                >
+                            </td>
+                            <td>
+                                <div class="entry-actions">
+                                    <button class="remove-btn" onclick="removeCreditEntry(${index})" title="Remove">×</button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                html += '</tbody></table></div>';
+                html += '<button class="add-more-btn" onclick="addCreditEntry()" title="Add More">+</button>';
+
+                container.innerHTML = html;
+                summarySection.style.display = 'block';
+            }
+        }
+
+        // Expense Entries Functions
+        function addExpenseEntry() {
+            const entry = { accountId: '', amount: '' };
+            expenseEntries.push(entry);
+            renderExpenseEntries();
+        }
+
+        function removeExpenseEntry(index) {
+            expenseEntries.splice(index, 1);
+            renderExpenseEntries();
+            updateFinalSummary();
+        }
+
+        function updateExpenseEntry(index, field, value) {
+            expenseEntries[index][field] = field === 'amount' ? (value === '' ? '' : parseFloat(value)) : value;
+            updateExpenseTotal();
+            updateFinalSummary();
+        }
+
+        function updateExpenseTotal() {
+            const total = expenseEntries.reduce((sum, entry) => sum + (parseFloat(entry.amount) || 0), 0);
+            document.getElementById('expense-total').textContent = total.toFixed(1);
+            return total;
+        }
+
+        function renderExpenseEntries() {
+            const container = document.getElementById('expense-entries');
+            const summarySection = container.parentElement.querySelector('.summary-section');
+
+            if (expenseEntries.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <button class="btn btn-primary" onclick="addExpenseEntry()">Expense</button>
+                    </div>
+                `;
+                summarySection.style.display = 'none';
+            } else {
+                let html = '<div class="entries-table"><table><thead><tr><th>Expense Account</th><th>Amount</th></tr></thead><tbody>';
+
+                expenseEntries.forEach((entry, index) => {
+                    html += `
+                        <tr>
+                            <td>
+                                <select class="form-select" onchange="updateExpenseEntry(${index}, 'accountId', this.value)">
+                                    <option value="">Select Account</option>
+                                    ${mockExpenseAccounts.map(account => `
+                                        <option value="${account.id}" ${entry.accountId === account.id ? 'selected' : ''}>
+                                            ${account.name}
+                                        </option>
+                                    `).join('')}
+                                </select>
+                            </td>
+                            <td>
+                                <input
+                                    type="number"
+                                    class="form-input"
+                                    value="${entry.amount || ''}"
+                                    onchange="updateExpenseEntry(${index}, 'amount', this.value)"
+                                    step="0.1"
+                                    min="0"
+                                    placeholder="0.00"
+                                >
+                            </td>
+                            <td>
+                                <div class="entry-actions">
+                                    <button class="remove-btn" onclick="removeExpenseEntry(${index})" title="Remove">×</button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                html += '</tbody></table></div>';
+                html += '<button class="add-more-btn" onclick="addExpenseEntry()" title="Add More">+</button>';
+
+                container.innerHTML = html;
+                summarySection.style.display = 'block';
+            }
+        }
+
+        // Cash Entries Functions
+        function addCashEntry() {
+            const entry = { receiptNumber: '', amount: '' };
+            cashEntries.push(entry);
+            renderCashEntries();
+        }
+
+        function removeCashEntry(index) {
+            cashEntries.splice(index, 1);
+            renderCashEntries();
+            updateFinalSummary();
+        }
+
+        function updateCashEntry(index, field, value) {
+            cashEntries[index][field] = field === 'amount' ? (value === '' ? '' : parseFloat(value)) : value;
+            updateCashTotal();
+            updateFinalSummary();
+        }
+
+        function updateCashTotal() {
+            const total = cashEntries.reduce((sum, entry) => sum + (parseFloat(entry.amount) || 0), 0);
+            document.getElementById('cash-total').textContent = total.toFixed(1);
+            return total;
+        }
+
+        function renderCashEntries() {
+            const container = document.getElementById('cash-entries');
+            const summarySection = container.parentElement.querySelector('.summary-section');
+
+            if (cashEntries.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <button class="btn btn-primary" onclick="addCashEntry()">Cash</button>
+                    </div>
+                `;
+                summarySection.style.display = 'none';
+            } else {
+                let html = '<div class="entries-table"><table><thead><tr><th>Receipt Number</th><th>Amount</th></tr></thead><tbody>';
+
+                cashEntries.forEach((entry, index) => {
+                    html += `
+                        <tr>
+                            <td>
+                                <input
+                                    type="text"
+                                    class="form-input"
+                                    value="${entry.receiptNumber || ''}"
+                                    onchange="updateCashEntry(${index}, 'receiptNumber', this.value)"
+                                    placeholder="Enter receipt number"
+                                >
+                            </td>
+                            <td>
+                                <input
+                                    type="number"
+                                    class="form-input"
+                                    value="${entry.amount || ''}"
+                                    onchange="updateCashEntry(${index}, 'amount', this.value)"
+                                    step="0.1"
+                                    min="0"
+                                    placeholder="0.00"
+                                >
+                            </td>
+                            <td>
+                                <div class="entry-actions">
+                                    <button class="remove-btn" onclick="removeCashEntry(${index})" title="Remove">×</button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                html += '</tbody></table></div>';
+                html += '<button class="add-more-btn" onclick="addCashEntry()" title="Add More">+</button>';
+
+                container.innerHTML = html;
+                summarySection.style.display = 'block';
+            }
+        }
+
+        // Digital Payment Entries Functions
+        function addDigitalEntry() {
+            const entry = { accountId: '', amount: '' };
+            digitalEntries.push(entry);
+            renderDigitalEntries();
+        }
+
+        function removeDigitalEntry(index) {
+            digitalEntries.splice(index, 1);
+            renderDigitalEntries();
+            updateFinalSummary();
+        }
+
+        function updateDigitalEntry(index, field, value) {
+            digitalEntries[index][field] = field === 'amount' ? (value === '' ? '' : parseFloat(value)) : value;
+            updateDigitalTotal();
+            updateFinalSummary();
+        }
+
+        function updateDigitalTotal() {
+            const total = digitalEntries.reduce((sum, entry) => sum + (parseFloat(entry.amount) || 0), 0);
+            document.getElementById('digital-total').textContent = total.toFixed(1);
+            return total;
+        }
+
+        function renderDigitalEntries() {
+            const container = document.getElementById('digital-entries');
+            const summarySection = container.parentElement.querySelector('.summary-section');
+
+            if (digitalEntries.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <button class="btn btn-primary" onclick="addDigitalEntry()">PhonePe / Swipe</button>
+                    </div>
+                `;
+                summarySection.style.display = 'none';
+            } else {
+                let html = '<div class="entries-table"><table><thead><tr><th>Digital Account</th><th>Amount</th></tr></thead><tbody>';
+
+                digitalEntries.forEach((entry, index) => {
+                    html += `
+                        <tr>
+                            <td>
+                                <select class="form-select" onchange="updateDigitalEntry(${index}, 'accountId', this.value)">
+                                    <option value="">Select Account</option>
+                                    ${mockDigitalAccounts.map(account => `
+                                        <option value="${account.id}" ${entry.accountId === account.id ? 'selected' : ''}>
+                                            ${account.name}
+                                        </option>
+                                    `).join('')}
+                                </select>
+                            </td>
+                            <td>
+                                <input
+                                    type="number"
+                                    class="form-input"
+                                    value="${entry.amount || ''}"
+                                    onchange="updateDigitalEntry(${index}, 'amount', this.value)"
+                                    step="0.1"
+                                    min="0"
+                                    placeholder="0.00"
+                                >
+                            </td>
+                            <td>
+                                <div class="entry-actions">
+                                    <button class="remove-btn" onclick="removeDigitalEntry(${index})" title="Remove">×</button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                html += '</tbody></table></div>';
+                html += '<button class="add-more-btn" onclick="addDigitalEntry()" title="Add More">+</button>';
+
+                container.innerHTML = html;
+                summarySection.style.display = 'block';
+            }
+        }
+
+        // Final Summary Calculation
+        function updateFinalSummary() {
+            const machineTotal = calculateTotal();
+            const creditTotal = updateCreditTotal();
+            const expenseTotal = updateExpenseTotal();
+            const cashTotal = updateCashTotal();
+            const digitalTotal = updateDigitalTotal();
+
+            const remaining = machineTotal - creditTotal - expenseTotal - cashTotal - digitalTotal;
+
+            // Update display
+            document.getElementById('final-machine-total').textContent = machineTotal.toFixed(1);
+
+            // Show/hide credit total row
+            const creditRow = document.getElementById('final-credit-row');
+            if (creditEntries.length > 0) {
+                document.getElementById('final-credit-total').textContent = `-${creditTotal.toFixed(1)}`;
+                creditRow.style.display = 'flex';
+            } else {
+                creditRow.style.display = 'none';
+            }
+
+            // Show/hide expense total row
+            const expenseRow = document.getElementById('final-expense-row');
+            if (expenseEntries.length > 0) {
+                document.getElementById('final-expense-total').textContent = `-${expenseTotal.toFixed(1)}`;
+                expenseRow.style.display = 'flex';
+            } else {
+                expenseRow.style.display = 'none';
+            }
+
+            // Show/hide digital total row
+            const digitalRow = document.getElementById('final-digital-row');
+            if (digitalEntries.length > 0) {
+                document.getElementById('final-digital-total').textContent = `-${digitalTotal.toFixed(1)}`;
+                digitalRow.style.display = 'flex';
+            } else {
+                digitalRow.style.display = 'none';
+            }
+
+            // Show/hide cash total row
+            const cashRow = document.getElementById('final-cash-row');
+            if (cashEntries.length > 0) {
+                document.getElementById('final-cash-total').textContent = `-${cashTotal.toFixed(1)}`;
+                cashRow.style.display = 'flex';
+            } else {
+                cashRow.style.display = 'none';
+            }
+
+            document.getElementById('remaining').textContent = remaining.toFixed(1);
+        }
+
+        function submitForm() {
+            // Get form values
+            const selectedDsms = Array.from(document.querySelectorAll('input[name="dsm"]:checked')).map(cb => cb.value);
+            const shift = document.getElementById('shift').value;
+            const date = document.getElementById('date').value;
+            const machine = document.getElementById('machine').value;
+
+            // Validation - Basic Info Section
+            const basicErrorDiv = document.getElementById('basic-info-error');
+
+            // Hide all error messages first
+            document.querySelectorAll('.error-message').forEach(div => {
+                div.style.display = 'none';
+            });
+
+            if (selectedDsms.length === 0) {
+                basicErrorDiv.textContent = 'Please select at least one DSM';
+                basicErrorDiv.style.display = 'block';
+                basicErrorDiv.scrollIntoView({ behavior: 'smooth' });
+                return;
+            }
+
+            if (!shift) {
+                basicErrorDiv.textContent = 'Please select a shift';
+                basicErrorDiv.style.display = 'block';
+                basicErrorDiv.scrollIntoView({ behavior: 'smooth' });
+                return;
+            }
+
+            if (!date) {
+                basicErrorDiv.textContent = 'Please select a date';
+                basicErrorDiv.style.display = 'block';
+                basicErrorDiv.scrollIntoView({ behavior: 'smooth' });
+                return;
+            }
+
+            if (!machine) {
+                basicErrorDiv.textContent = 'Please select a machine';
+                basicErrorDiv.style.display = 'block';
+                basicErrorDiv.scrollIntoView({ behavior: 'smooth' });
+                return;
+            }
+
+            // Check if all end readings are filled
+            const endReadings = [];
+            for (let i = 1; i <= 4; i++) {
+                const endValue = document.getElementById(`end${i}`).value;
+                if (!endValue || parseFloat(endValue) <= 0) {
+                    basicErrorDiv.textContent = `Please fill in all end readings`;
+                    basicErrorDiv.style.display = 'block';
+                    basicErrorDiv.scrollIntoView({ behavior: 'smooth' });
+                    return;
+                }
+                endReadings.push(parseFloat(endValue));
+            }
+
+            // Check if all end readings are >= start readings
+            const startReadings = mockStartReadings[machine];
+            for (let i = 0; i < 4; i++) {
+                if (endReadings[i] < startReadings[i]) {
+                    basicErrorDiv.textContent = `All end readings must be greater than or equal to start readings`;
+                    basicErrorDiv.style.display = 'block';
+                    basicErrorDiv.scrollIntoView({ behavior: 'smooth' });
+                    return;
+                }
+            }
+
+            // Validate credit entries (if any)
+            const creditErrorDiv = document.getElementById('credit-error');
+            for (let i = 0; i < creditEntries.length; i++) {
+                const entry = creditEntries[i];
+                if (!entry.accountId || entry.amount === '' || entry.amount <= 0) {
+                    creditErrorDiv.textContent = `Please complete all credit entries`;
+                    creditErrorDiv.style.display = 'block';
+                    creditErrorDiv.scrollIntoView({ behavior: 'smooth' });
+                    return;
+                }
+            }
+
+            // Validate expense entries (if any)
+            const expenseErrorDiv = document.getElementById('expense-error');
+            for (let i = 0; i < expenseEntries.length; i++) {
+                const entry = expenseEntries[i];
+                if (!entry.accountId || entry.amount === '' || entry.amount <= 0) {
+                    expenseErrorDiv.textContent = `Please complete all expense entries`;
+                    expenseErrorDiv.style.display = 'block';
+                    expenseErrorDiv.scrollIntoView({ behavior: 'smooth' });
+                    return;
+                }
+            }
+
+            // Validate cash entries (if any)
+            const cashErrorDiv = document.getElementById('cash-error');
+            for (let i = 0; i < cashEntries.length; i++) {
+                const entry = cashEntries[i];
+                if (!entry.receiptNumber || entry.amount === '' || entry.amount <= 0) {
+                    cashErrorDiv.textContent = `Please complete all cash entries`;
+                    cashErrorDiv.style.display = 'block';
+                    cashErrorDiv.scrollIntoView({ behavior: 'smooth' });
+                    return;
+                }
+            }
+
+            // Validate digital payment entries (if any)
+            const digitalErrorDiv = document.getElementById('digital-error');
+            for (let i = 0; i < digitalEntries.length; i++) {
+                const entry = digitalEntries[i];
+                if (!entry.accountId || entry.amount === '' || entry.amount <= 0) {
+                    digitalErrorDiv.textContent = `Please complete all digital payment entries`;
+                    digitalErrorDiv.style.display = 'block';
+                    digitalErrorDiv.scrollIntoView({ behavior: 'smooth' });
+                    return;
+                }
+            }
+
+            // Hide all error messages
+            document.querySelectorAll('.error-message').forEach(div => {
+                div.style.display = 'none';
+            });
+
+            // Calculate final totals
+            const machineTotal = calculateTotal();
+            const creditTotal = updateCreditTotal();
+            const expenseTotal = updateExpenseTotal();
+            const cashTotal = updateCashTotal();
+            const digitalTotal = updateDigitalTotal();
+            const remaining = machineTotal - creditTotal - expenseTotal - cashTotal - digitalTotal;
+
+            // Create summary
+            const summary = {
+                dsms: selectedDsms,
+                shift: shift,
+                date: date,
+                machine: machine,
+                startReadings: startReadings,
+                endReadings: endReadings,
+                subtotals: endReadings.map((end, i) => end - startReadings[i]),
+                machineTotal: machineTotal,
+                creditEntries: creditEntries,
+                creditTotal: creditTotal,
+                expenseEntries: expenseEntries,
+                expenseTotal: expenseTotal,
+                cashEntries: cashEntries,
+                cashTotal: cashTotal,
+                digitalEntries: digitalEntries,
+                digitalTotal: digitalTotal,
+                remaining: remaining
+            };
+
+            // Show success message with data
+            let message = `✅ Reading Submitted Successfully!\n\n`;
+            message += `Date: ${date}\n`;
+            message += `Machine: ${machine}\n`;
+            message += `DSMs: ${selectedDsms.join(', ')}\n`;
+            message += `Shift: ${shift}\n\n`;
+
+            message += ` Reading Total: ${machineTotal.toFixed(1)}\n`;
+            message += `Credit Total: ${creditTotal.toFixed(1)}\n`;
+            message += `Expense Total: ${expenseTotal.toFixed(1)}\n`;
+            message += `Cash Total: ${cashTotal.toFixed(1)}\n`;
+            message += `PhonePe / Swipe Total: ${digitalTotal.toFixed(1)}\n`;
+            message += `Remaining: ${remaining.toFixed(1)}\n`;
+
+            alert(message);
+
+            // Reset form (optional)
+            if (confirm('Reset form for next reading?')) {
+                window.location.reload();
+            }
+        }
+    </script>
+</body>
+</html>
