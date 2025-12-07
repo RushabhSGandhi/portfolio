@@ -1507,7 +1507,7 @@
 
         // Credit Entries Functions
         function addCreditEntry() {
-            const entry = { accountId: '', amount: '', vehicle: '' };
+            const entry = { accountId: '', amount: '', vehicle: '', billNumber: '' };
             creditEntries.push(entry);
             renderCreditEntries();
         }
@@ -1583,7 +1583,7 @@
                                         class="form-input"
                                         value="${entry.vehicle || ''}"
                                         onchange="updateCreditEntry(${index}, 'vehicle', this.value)"
-                                        placeholder="Vehicle"
+                                        placeholder="Vehicle No."
                                         style="font-size: 0.9rem;"
                                     >
                                 </div>
@@ -1598,6 +1598,16 @@
                                     min="0"
                                     placeholder="0.00"
                                 >
+                                <div style="margin-top: 0.25rem;">
+                                    <input
+                                        type="text"
+                                        class="form-input"
+                                        value="${entry.billNumber || ''}"
+                                        onchange="updateCreditEntry(${index}, 'billNumber', this.value)"
+                                        placeholder="Bill Number"
+                                        style="font-size: 0.9rem;"
+                                    >
+                                </div>
                             </td>
                             <td>
                                 <div class="entry-actions">
