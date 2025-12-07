@@ -166,6 +166,7 @@
             background: white;
             cursor: pointer;
             appearance: none;
+            color: #333;
             background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
             background-repeat: no-repeat;
             background-position: right 0.75rem center;
@@ -195,6 +196,60 @@
         .form-input[readonly] {
             background-color: #f8f9fa;
             cursor: not-allowed;
+        }
+
+        .date-input-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .date-input-container .form-input {
+            flex: 1;
+            padding-right: 50px; /* Make room for arrows */
+        }
+
+        .date-arrows {
+            position: absolute;
+            right: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .date-arrow {
+            width: 20px;
+            height: 15px;
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 10px;
+            line-height: 1;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 2px;
+            transition: background-color 0.2s;
+        }
+
+        .date-arrow:hover {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        .date-arrow:active {
+            background-color: #e0e0e0;
+        }
+
+        .date-arrow:disabled {
+            color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .date-arrow:disabled:hover {
+            background-color: transparent;
         }
 
         /* Error message */
@@ -648,15 +703,22 @@
 
                 <div class="form-row">
                     <div class="form-group">
-                        <input
-                            type="date"
-                            class="form-input"
-                            id="date"
-                            value=""
-                            min=""
-                            max=""
-                            required
-                        >
+                        <div class="date-input-container">
+                            <input
+                                type="date"
+                                class="form-input"
+                                id="date"
+                                value=""
+                                min=""
+                                max=""
+                                readonly
+                                required
+                            >
+                            <div class="date-arrows">
+                                <button type="button" class="date-arrow date-arrow-up" id="date-up" title="Next Day">▲</button>
+                                <button type="button" class="date-arrow date-arrow-down" id="date-down" title="Previous Day">▼</button>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -962,9 +1024,55 @@
         twoDaysAgo.setDate(today.getDate() - 2);
 
         const dateInput = document.getElementById('date');
-        dateInput.value = today.toISOString().split('T')[0];
-        dateInput.min = twoDaysAgo.toISOString().split('T')[0];
-        dateInput.max = today.toISOString().split('T')[0];
+        const dateUpBtn = document.getElementById('date-up');
+        const dateDownBtn = document.getElementById('date-down');
+
+        // Set initial date to today
+        let currentDate = new Date(today);
+        dateInput.value = currentDate.toISOString().split('T')[0];
+
+        // Update button states based on current date
+        function updateDateButtons() {
+            const currentDateValue = new Date(dateInput.value);
+            const todayDate = new Date();
+            const twoDaysAgoDate = new Date();
+            twoDaysAgoDate.setDate(todayDate.getDate() - 2);
+
+            // Disable up button if we're at today
+            dateUpBtn.disabled = currentDateValue.toDateString() === todayDate.toDateString();
+
+            // Disable down button if we're at 2 days ago
+            dateDownBtn.disabled = currentDateValue.toDateString() === twoDaysAgoDate.toDateString();
+        }
+
+        // Handle up arrow (next day)
+        dateUpBtn.addEventListener('click', function() {
+            const currentDateValue = new Date(dateInput.value);
+            currentDateValue.setDate(currentDateValue.getDate() + 1);
+
+            const todayDate = new Date();
+            if (currentDateValue <= todayDate) {
+                dateInput.value = currentDateValue.toISOString().split('T')[0];
+                updateDateButtons();
+            }
+        });
+
+        // Handle down arrow (previous day)
+        dateDownBtn.addEventListener('click', function() {
+            const currentDateValue = new Date(dateInput.value);
+            currentDateValue.setDate(currentDateValue.getDate() - 1);
+
+            const twoDaysAgoDate = new Date();
+            twoDaysAgoDate.setDate(new Date().getDate() - 2);
+
+            if (currentDateValue >= twoDaysAgoDate) {
+                dateInput.value = currentDateValue.toISOString().split('T')[0];
+                updateDateButtons();
+            }
+        });
+
+        // Initialize button states
+        updateDateButtons();
 
         // Mock data for demo
         const mockStartReadings = {
