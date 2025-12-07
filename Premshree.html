@@ -72,22 +72,22 @@
         }
 
         .add-more-btn {
-            padding: 0.5rem 1rem;
-            background-color: #28a745;
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            background-color: #21e34e;
             color: white;
-            border: none;
-            border-radius: 6px;
+            border: rgb(255, 0, 0) 1.4px solid;
+            border-radius: 50%;
             cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            display: inline-flex;
+            font-size: 18px;
+            font-weight: bold;
+            display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.25rem;
-            margin:  0 18rem 0.5rem;
+            margin: 0.5rem auto;
             min-width: auto;
             min-height: auto;
-            transition: background-color 0.2s;
         }
 
         .add-more-btn:hover {
@@ -1438,7 +1438,7 @@
                 });
 
                 html += '</tbody></table></div>';
-                html += '<button class="add-more-btn" onclick="addCreditEntry()" title="Add More"><span>+</span> Add</button>';
+                html += '<button class="add-more-btn" onclick="addCreditEntry()" title="Add More">+</button>';
 
                 container.innerHTML = html;
                 summarySection.style.display = 'block';
@@ -1518,7 +1518,7 @@
                 });
 
                 html += '</tbody></table></div>';
-                html += '<button class="add-more-btn" onclick="addExpenseEntry()" title="Add More"><span>+</span> Add</button>';
+                html += '<button class="add-more-btn" onclick="addExpenseEntry()" title="Add More">+</button>';
 
                 container.innerHTML = html;
                 summarySection.style.display = 'block';
@@ -1596,7 +1596,7 @@
                 });
 
                 html += '</tbody></table></div>';
-                html += '<button class="add-more-btn" onclick="addCashEntry()" title="Add More"><span>+</span> Add</button>';
+                html += '<button class="add-more-btn" onclick="addCashEntry()" title="Add More">+</button>';
 
                 container.innerHTML = html;
                 summarySection.style.display = 'block';
@@ -1676,7 +1676,7 @@
                 });
 
                 html += '</tbody></table></div>';
-                html += '<button class="add-more-btn" onclick="addDigitalEntry()" title="Add More"><span>+</span> Add</button>';
+                html += '<button class="add-more-btn" onclick="addDigitalEntry()" title="Add More">+</button>';
 
                 container.innerHTML = html;
                 summarySection.style.display = 'block';
