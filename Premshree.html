@@ -121,6 +121,12 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
+        /* Extra horizontal padding for credit, expense, and digital payment sections */
+        .card-entries {
+            padding-left: 0rem !important;
+            padding-right: 0rem !important;
+        }
+
         /* Form styles */
         .form-group {
             margin-bottom: 0.75rem;
@@ -546,6 +552,7 @@
             display: flex;
             gap: 1rem;
             margin-top: 1rem;
+            margin-bottom: 2rem;
             flex-wrap: wrap;
         }
 
@@ -924,7 +931,7 @@
         </div>
 
         <!-- Credit Entries Section -->
-        <div class="card">
+        <div class="card card-entries">
             <!-- Error message for credit entries section -->
             <div id="credit-error" class="error-message" style="display: none;"></div>
             <div class="section">
@@ -943,7 +950,7 @@
         </div>
 
         <!-- Expense Entries Section -->
-        <div class="card">
+        <div class="card card-entries">
             <!-- Error message for expense entries section -->
             <div id="expense-error" class="error-message" style="display: none;"></div>
             <div class="section">
@@ -963,7 +970,7 @@
 
 
         <!-- Digital Payment Entries Section -->
-        <div class="card">
+        <div class="card card-entries">
             <!-- Error message for digital entries section -->
             <div id="digital-error" class="error-message" style="display: none;"></div>
             <div class="section">
