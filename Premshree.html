@@ -394,10 +394,6 @@
         }
 
 
-        .multi-select-trigger.has-selection {
-            border-color: #007bff;
-            background-color: #f8f9ff;
-        }
 
         .readings-list {
             display: flex;
@@ -517,13 +513,14 @@
         }
 
         .summary-label {
-            font-weight: 200;
+            font-size: 1rem;
+            font-weight: 270;
             color: #333;
         }
 
         .summary-value {
             font-weight: 800;
-            font-size: 1.1rem;
+            font-size: 1.4rem;
             color: #007bff;
         }
 
@@ -545,7 +542,7 @@
         }
 
         .final-summary .summary-value {
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             font-weight: 700;
             color: #007bff;
         }
@@ -589,7 +586,7 @@
 
         .summary-value {
             font-weight: 800;
-            font-size: 1.1rem;
+            font-size: 1.4rem;
             color: #007bff
         }
 
@@ -607,7 +604,7 @@
         }
 
         .final-summary .summary-value {
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             font-weight: 700;
             color: #007bff
         }
@@ -810,10 +807,10 @@
                     </div>
                 </div>
 
-                <div class="total-section">
-                    <div class="total-row">
-                        <span class="total-label">Readings Total:</span>
-                        <span class="total-value" id="machine-total">0.00</span>
+                <div class="summary-section" style="padding-top: 0.8rem;">
+                    <div class="summary-row">
+                        <span class="summary-label">Readings Total:</span>
+                        <span class="summary-value" id="machine-total">0.00</span>
                     </div>
                 </div>
             </div>
@@ -1512,7 +1509,7 @@
             // Show/hide credit total row
             const creditRow = document.getElementById('final-credit-row');
             if (creditEntries.length > 0) {
-                document.getElementById('final-credit-total').textContent = `-${creditTotal.toFixed(1)}`;
+                document.getElementById('final-credit-total').textContent = creditTotal.toFixed(1);
                 creditRow.style.display = 'flex';
             } else {
                 creditRow.style.display = 'none';
@@ -1521,7 +1518,7 @@
             // Show/hide expense total row
             const expenseRow = document.getElementById('final-expense-row');
             if (expenseEntries.length > 0) {
-                document.getElementById('final-expense-total').textContent = `-${expenseTotal.toFixed(1)}`;
+                document.getElementById('final-expense-total').textContent = expenseTotal.toFixed(1);
                 expenseRow.style.display = 'flex';
             } else {
                 expenseRow.style.display = 'none';
@@ -1530,7 +1527,7 @@
             // Show/hide digital total row
             const digitalRow = document.getElementById('final-digital-row');
             if (digitalEntries.length > 0) {
-                document.getElementById('final-digital-total').textContent = `-${digitalTotal.toFixed(1)}`;
+                document.getElementById('final-digital-total').textContent = digitalTotal.toFixed(1);
                 digitalRow.style.display = 'flex';
             } else {
                 digitalRow.style.display = 'none';
@@ -1539,7 +1536,7 @@
             // Show/hide cash total row
             const cashRow = document.getElementById('final-cash-row');
             if (cashEntries.length > 0) {
-                document.getElementById('final-cash-total').textContent = `-${cashTotal.toFixed(1)}`;
+                document.getElementById('final-cash-total').textContent = cashTotal.toFixed(1);
                 cashRow.style.display = 'flex';
             } else {
                 cashRow.style.display = 'none';
