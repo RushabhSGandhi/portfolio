@@ -579,7 +579,7 @@
         }
 
         .entries-table td {
-            padding: 0.03rem 0.05rem;
+            padding: 0.5rem 0.75rem;
         }
 
         .entries-table .form-select {
@@ -590,6 +590,23 @@
         .entries-table .form-input {
             width: 100%;
             min-width: 80px;
+        }
+
+        .receipt-input {
+            width: 120px;
+            min-width: 120px;
+            max-width: 120px;
+        }
+
+        .cash-amount-input {
+            width: 100%;
+            min-width: 150px;
+            flex: 1;
+        }
+
+        .receipt-header {
+            padding-left: 0.8rem;
+            text-align: left;
         }
 
         .entry-actions {
@@ -1551,7 +1568,7 @@
                 `;
                 summarySection.style.display = 'none';
             } else {
-                let html = '<div class="entries-table"><table><thead><tr><th>Receipt Number</th><th>Amount</th></tr></thead><tbody>';
+                let html = '<div class="entries-table"><table><thead><tr><th class="receipt-header">Receipt Number</th><th>Amount</th></tr></thead><tbody>';
 
                 cashEntries.forEach((entry, index) => {
                     html += `
@@ -1559,7 +1576,7 @@
                             <td>
                                 <input
                                     type="text"
-                                    class="form-input"
+                                    class="form-input receipt-input"
                                     value="${entry.receiptNumber || ''}"
                                     onchange="updateCashEntry(${index}, 'receiptNumber', this.value)"
                                 >
@@ -1567,7 +1584,7 @@
                             <td>
                                 <input
                                     type="number"
-                                    class="form-input"
+                                    class="form-input cash-amount-input"
                                     value="${entry.amount || ''}"
                                     onchange="updateCashEntry(${index}, 'amount', this.value)"
                                     step="0.1"
@@ -1889,10 +1906,8 @@
 
             alert(message);
 
-            // Reset form (optional)
-            if (confirm('Reset form for next reading?')) {
-                window.location.reload();
-            }
+            // Reset form automatically
+            window.location.reload();
         }
     </script>
 </body>
