@@ -668,7 +668,7 @@
         .summary-section {
             margin-bottom: 0rem;
             padding: 0.4rem;
-            background-color: #f8f9fa;
+            background-color: #dbf2f3;
             border-radius: 8px;
         }
 
@@ -1193,6 +1193,8 @@
             initializeMultiSelect();
             initializeSingleSelects();
             initializeDateDropdown();
+            // Auto-add cash entry since it's always needed
+            addCashEntry();
         });
 
         // Initialize date dropdown
