@@ -328,6 +328,10 @@
             box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
         }
 
+        .multi-select-trigger:focus::after {
+            color: #007bff;
+        }
+
         .multi-select-trigger::after {
             content: '▼';
             font-size: 0.8rem;
@@ -393,7 +397,86 @@
             padding: 0;
         }
 
+        /* Single select dropdown styles */
+        .single-select-dropdown {
+            position: relative;
+            width: 100%;
+        }
 
+        .single-select-trigger {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-size: 1rem;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .single-select-trigger:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+
+        .single-select-trigger:focus::after {
+            color: #007bff;
+        }
+
+        .single-select-trigger::after {
+            content: '▼';
+            font-size: 0.8rem;
+            color: #666;
+            transition: transform 0.2s;
+        }
+
+        .single-select-trigger.open::after {
+            transform: rotate(180deg);
+        }
+
+        .single-select-options {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+
+        .single-select-options.open {
+            display: block;
+        }
+
+        .single-select-option {
+            padding: 0.75rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .single-select-option:last-child {
+            border-bottom: none;
+        }
+
+        .single-select-option:hover {
+            background-color: #f8f9fa;
+        }
+
+        .single-select-option.selected {
+            background-color: #e3f2fd;
+            color: #007bff;
+        }
 
         .readings-list {
             display: flex;
@@ -419,7 +502,12 @@
 
         .reading-value {
             font-weight: 700;
+            font-size: 1.3rem;
             color: #dc3545;
+        }
+
+        .reading-value[id*="subtotal"] {
+            color: #007bff;
         }
 
         .total-section {
@@ -549,7 +637,7 @@
 
         #remaining {
             color: #dc3545 !important;
-            font-size: 1.3rem !important;
+            font-size: 1.4rem !important;
             font-weight: 800 !important;
         }
 
@@ -689,43 +777,57 @@
                     </div>
 
                     <div class="form-group">
-                        <select class="form-select" id="shift" required>
-                            <option value="">Select Shift</option>
-                            <option value="morning">Morning</option>
-                            <option value="evening">Evening</option>
-                            <option value="night">Night</option>
-                        </select>
+                        <div class="single-select-dropdown">
+                            <div class="single-select-trigger" id="shift-trigger">
+                                <span id="shift-selected-text">Select Shift</span>
+                            </div>
+                            <div class="single-select-options" id="shift-options">
+                                <div class="single-select-option" data-value="morning">
+                                    <span>Morning</span>
+                                </div>
+                                <div class="single-select-option" data-value="evening">
+                                    <span>Evening</span>
+                                </div>
+                                <div class="single-select-option" data-value="night">
+                                    <span>Night</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <div class="date-input-container">
-                            <input
-                                type="date"
-                                class="form-input"
-                                id="date"
-                                value=""
-                                min=""
-                                max=""
-                                readonly
-                                required
-                            >
-                            <div class="date-arrows">
-                                <button type="button" class="date-arrow date-arrow-up" id="date-up" title="Next Day">▲</button>
-                                <button type="button" class="date-arrow date-arrow-down" id="date-down" title="Previous Day">▼</button>
+                        <div class="single-select-dropdown">
+                            <div class="single-select-trigger" id="date-trigger">
+                                <span id="date-selected-text">Select Date</span>
+                            </div>
+                            <div class="single-select-options" id="date-options">
+                                <!-- Date options will be populated by JavaScript -->
                             </div>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <select class="form-select" id="machine" required>
-                            <option value="">Select Machine</option>
-                            <option value="m001">M001 - Machine 1</option>
-                            <option value="m002">M002 - Machine 2</option>
-                            <option value="m003">M003 - Machine 3</option>
-                            <option value="m004">M004 - Machine 4</option>
-                        </select>
+                        <div class="single-select-dropdown">
+                            <div class="single-select-trigger" id="machine-trigger">
+                                <span id="machine-selected-text">Select Machine</span>
+                            </div>
+                            <div class="single-select-options" id="machine-options">
+                                <div class="single-select-option" data-value="m001">
+                                    <span>M001 - Machine 1</span>
+                                </div>
+                                <div class="single-select-option" data-value="m002">
+                                    <span>M002 - Machine 2</span>
+                                </div>
+                                <div class="single-select-option" data-value="m003">
+                                    <span>M003 - Machine 3</span>
+                                </div>
+                                <div class="single-select-option" data-value="m004">
+                                    <span>M004 - Machine 4</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1012,64 +1114,129 @@
             }
         }
 
-        // Initialize multi-select on page load
-        document.addEventListener('DOMContentLoaded', initializeMultiSelect);
+        // Single select dropdown functionality
+        function initializeSingleSelect(dropdownId, defaultText) {
+            const trigger = document.getElementById(`${dropdownId}-trigger`);
+            const options = document.getElementById(`${dropdownId}-options`);
+            const selectedText = document.getElementById(`${dropdownId}-selected-text`);
+            const optionElements = options.querySelectorAll('.single-select-option');
 
-        // Set default date and constraints
-        const today = new Date();
-        const twoDaysAgo = new Date();
-        twoDaysAgo.setDate(today.getDate() - 2);
+            // Toggle dropdown
+            trigger.addEventListener('click', function(e) {
+                e.stopPropagation();
+                this.classList.toggle('open');
+                options.classList.toggle('open');
+            });
 
-        const dateInput = document.getElementById('date');
-        const dateUpBtn = document.getElementById('date-up');
-        const dateDownBtn = document.getElementById('date-down');
+            // Handle option selection
+            optionElements.forEach(option => {
+                option.addEventListener('click', function() {
+                    const value = this.getAttribute('data-value');
+                    const text = this.querySelector('span').textContent;
 
-        // Set initial date to today
-        let currentDate = new Date(today);
-        dateInput.value = currentDate.toISOString().split('T')[0];
+                    // Update selected text
+                    selectedText.textContent = text;
 
-        // Update button states based on current date
-        function updateDateButtons() {
-            const currentDateValue = new Date(dateInput.value);
-            const todayDate = new Date();
-            const twoDaysAgoDate = new Date();
-            twoDaysAgoDate.setDate(todayDate.getDate() - 2);
+                    // Update hidden input or store value
+                    const hiddenInput = document.getElementById(dropdownId) || document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.id = dropdownId;
+                    hiddenInput.value = value;
+                    if (!document.getElementById(dropdownId)) {
+                        trigger.appendChild(hiddenInput);
+                    }
 
-            // Disable up button if we're at today
-            dateUpBtn.disabled = currentDateValue.toDateString() === todayDate.toDateString();
+                    // Update selected state
+                    optionElements.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
 
-            // Disable down button if we're at 2 days ago
-            dateDownBtn.disabled = currentDateValue.toDateString() === twoDaysAgoDate.toDateString();
+                    // Close dropdown
+                    trigger.classList.remove('open');
+                    options.classList.remove('open');
+
+                    // Trigger change event for form validation and machine logic
+                    if (dropdownId === 'machine') {
+                        handleMachineChange(value);
+                    }
+                });
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!trigger.contains(e.target) && !options.contains(e.target)) {
+                    trigger.classList.remove('open');
+                    options.classList.remove('open');
+                }
+            });
         }
 
-        // Handle up arrow (next day)
-        dateUpBtn.addEventListener('click', function() {
-            const currentDateValue = new Date(dateInput.value);
-            currentDateValue.setDate(currentDateValue.getDate() + 1);
+        // Initialize single-select dropdowns
+        function initializeSingleSelects() {
+            initializeSingleSelect('shift', 'Select Shift');
+            initializeSingleSelect('machine', 'Select Machine');
+        }
 
-            const todayDate = new Date();
-            if (currentDateValue <= todayDate) {
-                dateInput.value = currentDateValue.toISOString().split('T')[0];
-                updateDateButtons();
-            }
+        // Initialize multi-select on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeMultiSelect();
+            initializeSingleSelects();
+            initializeDateDropdown();
         });
 
-        // Handle down arrow (previous day)
-        dateDownBtn.addEventListener('click', function() {
-            const currentDateValue = new Date(dateInput.value);
-            currentDateValue.setDate(currentDateValue.getDate() - 1);
+        // Initialize date dropdown
+        function initializeDateDropdown() {
+            const today = new Date();
+            const optionsContainer = document.getElementById('date-options');
+            const selectedText = document.getElementById('date-selected-text');
 
-            const twoDaysAgoDate = new Date();
-            twoDaysAgoDate.setDate(new Date().getDate() - 2);
+            // Create date options for today and past 2 days
+            const dateOptions = [];
 
-            if (currentDateValue >= twoDaysAgoDate) {
-                dateInput.value = currentDateValue.toISOString().split('T')[0];
-                updateDateButtons();
+            for (let i = 2; i >= 0; i--) {
+                const date = new Date(today);
+                date.setDate(today.getDate() - i);
+
+                const dateString = date.toISOString().split('T')[0];
+                const displayText = date.toLocaleDateString('en-US', {
+                    weekday: 'short',
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+
+                dateOptions.push({ value: dateString, text: displayText });
             }
-        });
 
-        // Initialize button states
-        updateDateButtons();
+            // Clear existing options
+            optionsContainer.innerHTML = '';
+
+            // Add date options
+            dateOptions.forEach(option => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'single-select-option';
+                optionDiv.setAttribute('data-value', option.value);
+                optionDiv.innerHTML = `<span>${option.text}</span>`;
+                optionsContainer.appendChild(optionDiv);
+            });
+
+            // Set default selection to today (first option in the array is 2 days ago, last is today)
+            const todayOption = dateOptions[2]; // Today's date is the last option
+            const todayElement = optionsContainer.querySelector(`[data-value="${todayOption.value}"]`);
+            if (todayElement) {
+                todayElement.classList.add('selected');
+                selectedText.textContent = todayOption.text;
+
+                // Create hidden input for form submission
+                const hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.id = 'date';
+                hiddenInput.value = todayOption.value;
+                document.getElementById('date-trigger').appendChild(hiddenInput);
+            }
+
+            // Initialize dropdown functionality
+            initializeSingleSelect('date', selectedText.textContent);
+        }
 
         // Mock data for demo
         const mockStartReadings = {
@@ -1098,8 +1265,7 @@
         ];
 
         // Handle machine selection
-        document.getElementById('machine').addEventListener('change', function() {
-            const machineId = this.value;
+        function handleMachineChange(machineId) {
 
             if (machineId && mockStartReadings[machineId]) {
                 const startReadings = mockStartReadings[machineId];
@@ -1126,7 +1292,7 @@
                 document.getElementById('machine-total').textContent = '0.00';
                 updateFinalSummary();
             }
-        });
+        }
 
         // Handle end reading changes
         for (let i = 1; i <= 4; i++) {
@@ -1548,9 +1714,9 @@
         function submitForm() {
             // Get form values
             const selectedDsms = Array.from(document.querySelectorAll('input[name="dsm"]:checked')).map(cb => cb.value);
-            const shift = document.getElementById('shift').value;
+            const shift = document.getElementById('shift') ? document.getElementById('shift').value : '';
             const date = document.getElementById('date').value;
-            const machine = document.getElementById('machine').value;
+            const machine = document.getElementById('machine') ? document.getElementById('machine').value : '';
 
             // Validation - Basic Info Section
             const basicErrorDiv = document.getElementById('basic-info-error');
